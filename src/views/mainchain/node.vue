@@ -1,0 +1,54 @@
+<template>
+  <div>
+    <div>
+      <div>
+        <h3 class="title">节点信息</h3>
+        <el-table :data="data">
+          <el-table-column
+            v-for="(item) in columns"
+            :key="item.prop"
+            :prop="item.prop"
+            :label="item.label">
+          </el-table-column>
+        </el-table>
+        <div class="pager">
+          <div class="pager-inner">
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="50">
+            </el-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+var columns = [
+  {prop: 'node_name',label: '节点名称'},
+  {prop: 'uri', label: '节点URI'},
+  {prop: 'startup_time', label: '启动时间'},
+  {prop: 'recv_cc', label: '接受量'},
+  {prop: 'send_cc', label: '发送量'},
+  {prop: 'node_idx', label: '节点ID'},
+  {prop: 'block_cc', label: '区块数量'},
+  {prop: 'status', label: '状态'}
+]
+export default {
+  data() {
+    return {
+      columns,
+      data: []
+    }
+  },
+  mounted() {
+    
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -13,10 +13,16 @@
 .el-dialog {
   transform: none;
   left: 0;
-  position: relative;
+  position: relative; 
   margin: 0 auto;
+  width: 500px;
 }
-
+.mobile {
+  .el-dialog {
+    width: 90%;
+    max-width: 600px;
+  }
+}
 //element ui upload
 .upload-container {
   .el-upload {
@@ -26,4 +32,8 @@
       height: 200px;
     }
   }
+}
+
+.el-checkbox__inner::after {
+  border-width: 2px;
 }

@@ -31,7 +31,6 @@ export default {
       if (!document.hidden) {
         const isMobile = this.isMobile()
         store.dispatch('ToggleDevice', isMobile ? 'mobile' : 'desktop')
-
         if (isMobile) {
           store.dispatch('CloseSideBar', { withoutAnimation: true })
         }

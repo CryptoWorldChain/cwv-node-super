@@ -1,5 +1,5 @@
 <template>
-  <div class="app-wrapper" :class="classObj">
+  <div class="login-wrapper" :class="classObj">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
     <sidebar class="sidebar-container"></sidebar>
     <div class="main-container">
@@ -46,7 +46,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/mixin.scss";
-  .app-wrapper {
+  .login-wrapper {
     @include clearfix;
     position: relative;
     height: 100%;

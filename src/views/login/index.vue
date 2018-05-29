@@ -1,37 +1,26 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">vue-element-admin</h3>
-      <el-form-item prop="username">
-        <span class="svg-container svg-container_login">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
-      </el-form-item>
+    <el-form class="login-form" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+      <h3 class="login-title">Node Management</h3>
+      <input type="text" style="display: none;" />
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password"></svg-icon>
         </span>
-        <el-input name="password" :type="pwdType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
+        <el-input :type="pwdType" @keyup.enter.native="handleLogin($event)" v-model="loginForm.password" autoComplete="new-password"
           placeholder="password"></el-input>
           <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
-          Sign in
-        </el-button>
-      </el-form-item>
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
-      </div>
+      <el-button  size="big" type="primary" style="width:100%; margin: 10px 0;" :loading="loading" @click.native.prevent="handleLogin">
+        Sign in
+      </el-button>
     </el-form>
   </div>
 </template>
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
-
+import { setToken } from '@/utils/auth' 
 export default {
   name: 'login',
   data() {
@@ -43,19 +32,19 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error('密码不能小于5位'))
+      if (value.length < 6) {
+        callback(new Error('密码不能小于6位'))
+      } else if (value.length > 20) {
+        callback('密码不能大于20位')
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
@@ -70,15 +59,26 @@ export default {
         this.pwdType = 'password'
       }
     },
-    handleLogin() {
+    handleLogin(event) {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          let password = this.loginForm.password.trim();
+          this.$store.dispatch('Login', password).then((res) => {
+            console.log('------login')
             this.loading = false
-            this.$router.push({ path: '/' })
+            if (res.retCode == '1') {
+              this.$router.push({ path: '/' })
+            }else {
+              if (res.retMsg) {
+                this.$message.error(res.retMsg)
+              }else {
+                this.$message.error('登录失败，请稍后重试')
+              }
+            }
           }).catch(() => {
             this.loading = false
+            this.$message.error('登录失败，请稍后重试')
           })
         } else {
           console.log('error submit!!')
@@ -161,7 +161,7 @@ $light_gray:#eee;
       font-size: 20px;
     }
   }
-  .title {
+  .login-title {
     font-size: 26px;
     font-weight: 400;
     color: $light_gray;

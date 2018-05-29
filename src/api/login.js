@@ -1,12 +1,19 @@
 import request from '@/utils/request'
 
-export function login(username, password) {
+export function checkPassword() {
   return request({
-    url: '/user/login',
+    url: '/node/man/pbcia.do',
+    method: 'post',
+    data: {}
+  })
+}
+
+export function login(pwd) {
+  return request({
+    url: '/node/man/pblgi.do',
     method: 'post',
     data: {
-      username,
-      password
+      pwd
     }
   })
 }

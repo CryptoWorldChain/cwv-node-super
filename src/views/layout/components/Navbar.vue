@@ -25,6 +25,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { removeToken, removePassword, removeAddress } from '@/utils/auth'
 
 export default {
   components: {
@@ -37,14 +38,25 @@ export default {
       'avatar'
     ])
   },
+  data() {
+    return {
+      loading:null
+    }
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload() // 为了重新实例化vue-router对象 避免bug
-      })
+      this.loading = this.$loading()
+      // this.$store.dispatch('LogOut').then(() => {
+      //   this.loading.close()
+      //   location.reload() // 为了重新实例化vue-router对象 避免bug
+      // })
+      removeToken()
+      removeAddress()
+      // removePassword()
+      location.reload()
     }
   }
 }
@@ -55,6 +67,12 @@ export default {
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;
+  position: fixed;
+  left: 180px;
+  right: 0;
+  top:0;
+  padding-right: 10px;
+  transition: left 0.1s linear;
   .hamburger-container {
     line-height: 58px;
     height: 50px;
@@ -79,7 +97,7 @@ export default {
       .user-avatar {
         width: 40px;
         height: 40px;
-        border-radius: 10px;
+        border-radius: 50%;
       }
       .el-icon-caret-bottom {
         position: absolute;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <h3>页面开发中</h3>
+      <h4>请检查您的网络</h4>
     </div>
   </div>
 </template>

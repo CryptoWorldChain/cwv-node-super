@@ -116,3 +116,22 @@
     }
   }
 }
+
+
+//顶部导航适应
+.hideSidebar {
+  .navbar {
+    left: 36px !important;
+  }
+  .app-main {
+    left: 36px !important;
+  }
+}
+.mobile {
+  .navbar {
+    left: 0px !important;
+  }
+  .app-main {
+    left: 0px !important;
+  }
+}

@@ -8,6 +8,9 @@
       background-color="#304156"
       text-color="#bfcbd9"
       active-text-color="#409EFF"
+      @open="openSideMenu"
+      @select="openSideMenu"
+      ref="sideMenu"
     >
       <sidebar-item :routes="routes"></sidebar-item>
     </el-menu>
@@ -30,6 +33,20 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  methods: {
+    openSideMenu (value) {
+      let routes = this.routes;
+      let that = this;
+      routes.forEach((item) => {
+        let key = item.name;
+        if (key && key !== value ) {
+          that.$refs['sideMenu'].close(key)
+        }
+      })
+    }
+  },
+  mounted () {
   }
 }
 </script>
