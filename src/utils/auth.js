@@ -36,6 +36,6 @@ export function setAddress(address) {
 export function getAddress(address) {
   return Cookies.get(addressKey)
 }
-export function removeAddress(address) {
+export function removeAddress() {
   return Cookies.remove(addressKey)
 }

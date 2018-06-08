@@ -65,6 +65,7 @@
       :modal-append-to-body="false"
       title="创建账户"
       :visible.sync="addVisible"
+      @close="closeDialog"
       center>
       <div>
         <el-input v-model="inputAddress"  auto-complete="new-password" type="password" placeholder="请输入您的密码"></el-input>
@@ -82,6 +83,7 @@
       :modal-append-to-body="false"
       title="导入keystore"
       :visible.sync="keystoreVisible"
+      @close="closeDialog"
       center>
       <div>
         <el-input v-model="keystorePass"  auto-complete="new-password" type="password" placeholder="请输入您的密码"></el-input>
@@ -100,7 +102,7 @@
 
 <script>
 import Transactions from './transactions'
-import { getAddress, setAddress } from '@/utils/auth'
+import { getAddress, setAddress, removeAddress } from '@/utils/auth'
 var pwdReg = /^.{6,20}$/;
 var columns = [
   {prop: 'txHash',label: '交易哈希'},
@@ -195,9 +197,13 @@ export default {
         this.getAddressErr = ''
         this.loading.close()
         console.log('addressinfo',res)
-        if (res.retCode == '1' && res.address) {
-          setAddress(res.address)
-          this.initAddressInfo(res.address)
+        if (res.retCode == '1') {
+          if (res.address) {
+            setAddress(res.address)
+            this.initAddressInfo(res.address)
+          } else {
+            removeAddress()
+          }
         }
       }).catch((err) => {
         this.$message.error('网络请求错误')
@@ -273,7 +279,7 @@ export default {
         address
       }).then((res) => {
         this.loading.close()
-        if (res.retCode == 1 && typeof res.address ) {
+        if (res.retCode == 1 && res.address ) {
           console.log(res,'-----------')
           this.addressInfo = res.address
         } else {
@@ -338,11 +344,19 @@ export default {
           this.initAddress()
         } else if (res.retMsg) {
           this.$message.error(res.retMsg + ',账户创建失败')
+        } else {
+          this.$message.error('账户创建失败,请稍后重试')
         }
       }).catch((err) => {
         this.loading.close()
         this.$message.error('账户创建失败')
       })
+    },
+    closeDialog() {
+      this.inputAddress = '';
+      this.repeatpwd = ''
+      this.keystorePass = ''
+      this.repeatKeystorePass = ''
     }
   }
 }

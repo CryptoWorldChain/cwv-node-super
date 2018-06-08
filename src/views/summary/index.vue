@@ -117,6 +117,7 @@
 <script>
 import moment from 'moment';
 import { numReg } from '@/utils/validate';
+import { getAddress, setAddress, removeAddress } from '@/utils/auth'
 export default {
   data() {
     return {
@@ -154,9 +155,15 @@ export default {
     },
     initNode() {
       this.$http.post('/node/man/pbgni.do').then((res) => {
-        console.log('----res',res)
+        console.log('----res',res.address)
         if (res.serverTime) {
           this.node = res;
+          if (this.node && this.node.address) {
+            let address = this.node.address;
+            setAddress(address)
+          } else {
+            removeAddress()
+          }
         }else {
           this.node = {};
         }

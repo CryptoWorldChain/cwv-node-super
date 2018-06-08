@@ -1,14 +1,14 @@
 <template>
   <div class="home-index">
     <div class="home-index-inner">
-      <div>
+      <div v-if="!neterr">
         <h3 v-if="settedNet">您已经设置了{{settedNet}}</h3>
         <h3 v-else>您还没有设置网络，请设置你的网络</h3>
       </div>
-      <div v-if="neterr" class="input-error">
+      <div v-if="neterr" style="padding-top: 40px;" class="input-error">
         {{neterr}}
       </div>
-      <div v-else-if="set">
+      <div v-else-if="!set">
         <el-select v-model="net"
           placeholder="请选择网络"
           @change="chooseNet"
@@ -33,7 +33,7 @@
         </el-select>
         <el-button :loading="loading" type="primary" @click="setNetwork" class="confirm-set-btn">设置</el-button>
       </div>
-      <div v-else>
+      <div v-else-if="set">
         <el-button class="modify-set-btn" type="primary" @click="modify">修改网络</el-button>
       </div>
     </div>
@@ -96,6 +96,7 @@ export default {
             var arr = res.network.split('_')
             this.net = arr[0];
             this.devNet = arr[1]
+            this.set = true;
           }else {
             this.net = res.network;
           }
@@ -133,7 +134,7 @@ export default {
           this.$message.success('设置成功');
         }else {
           if (res.retMsg) {
-            this.$message.error('设置失败'+res.retMsg );
+            this.$message.error('设置失败,'+res.retMsg );
           }
           this.$message.error('设置失败');
         }
@@ -159,7 +160,7 @@ export default {
       })
     },
     modify() {
-      this.set = true;
+      this.set = false;
     }
   }
 }
