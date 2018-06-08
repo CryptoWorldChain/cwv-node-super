@@ -182,13 +182,29 @@ a:hover {
 .input-error {
   font-size: 12px;
   color: #f00;
-  padding: 4px 0;
   height: 20px;
+  line-height: 20px;
 }
 //pagination
 .pager {
+  &:after,&::before {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
   padding: 20px;
   .pager-inner {
     float: right;
+    &:after,&:before {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
   }
 }

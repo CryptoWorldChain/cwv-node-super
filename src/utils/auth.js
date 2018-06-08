@@ -21,7 +21,9 @@ export function getPassword() {
 }
 
 export function setPassword(password) {
-  return Cookies.set(PasswordKey, password)
+  return Cookies.set(PasswordKey, password, {
+    expires: 1 / 2
+  })
 }
 
 export function removePassword() {

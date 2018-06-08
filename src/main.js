@@ -13,6 +13,11 @@ import router from './router'
 import store from './store'
 import VueClipboard from 'vue-clipboard2'
 import VueTimeago from 'vue-timeago'
+import timeago from 'timeago.js'
+import moment from 'moment'
+
+Vue.prototype.moment = moment
+Vue.prototype.timeago = timeago
 
 Vue.use(VueTimeago, {
   name: 'Timeago', // Component name, `Timeago` by default

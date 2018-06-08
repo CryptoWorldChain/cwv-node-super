@@ -3,10 +3,13 @@
     <div class="home-index-inner">
       <div>
         <h3 v-if="settedNet">您已经设置了{{settedNet}}</h3>
-        <h3 v-else>请设置你的网络</h3>
+        <h3 v-else>您还没有设置网络，请设置你的网络</h3>
       </div>
-      <div>
-        <el-select v-model="net" 
+      <div v-if="neterr" class="input-error">
+        {{neterr}}
+      </div>
+      <div v-else-if="set">
+        <el-select v-model="net"
           placeholder="请选择网络"
           @change="chooseNet"
           >
@@ -28,8 +31,11 @@
             :value="item.value">
           </el-option>
         </el-select>
+        <el-button :loading="loading" type="primary" @click="setNetwork" class="confirm-set-btn">设置</el-button>
       </div>
-      <el-button :loading="loading" type="primary" @click="setNetwork" class="confirm-set-btn">设置</el-button>
+      <div v-else>
+        <el-button class="modify-set-btn" type="primary" @click="modify">修改网络</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,12 +63,15 @@ let devOptions = (function () {
 export default {
   data() {
     return {
+      set: false,
+      neterr: '',
       options,
       devOptions,
       net:'',
-      devNet:'1',
+      devNet:'3',
       loading: false,
-      settedNet:''
+      settedNet:'',
+      netloading: {}
     }
   },
   created(){
@@ -77,13 +86,25 @@ export default {
       console.log(value);
     },
     getNetwork() {
+      this.netloading = this.$loading()
       this.$http.post('/node/man/pbgnw.do').then((res) => {
         console.log('res',res)
-        if (res.retCode == '1') {
+        this.netloading.close()
+        if (res.retCode == '1' && res.network) {
           this.settedNet = res.network;
+          if (res.network && res.network.indexOf('_') > -1) {
+            var arr = res.network.split('_')
+            this.net = arr[0];
+            this.devNet = arr[1]
+          }else {
+            this.net = res.network;
+          }
         }
+        this.neterr = ''
       }).catch((err) => {
+        this.netloading.close()
         this.$message.error('获取网络设置详情失败')
+        this.neterr = '获取网络设置详情失败,请稍后重试'
         console.log('errrr---get net',err)
       })
     },
@@ -137,6 +158,9 @@ export default {
         console.log(err)
       })
     },
+    modify() {
+      this.set = true;
+    }
   }
 }
 </script>
@@ -144,10 +168,14 @@ export default {
 <style scoped lang="scss">
   .home-index-inner {
     padding: 0 20px;
-    .confirm-set-btn {
-      width: 40%;
+    .confirm-set-btn, .modify-set-btn {
+      display: block;
+      width: 390px;
       min-width: 280px;
       margin: 20px 0;
+      @media screen and (max-width: 780px) {
+        width: 100%;
+      }
     }
     .el-select {
       margin: 20px 0;

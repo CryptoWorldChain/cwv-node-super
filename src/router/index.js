@@ -46,13 +46,13 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/home/index',
     name: 'Home',
-    meta: { title: 'Home', icon: ['fas', 'home'] },
+    meta: { title: '主页', icon: ['fas', 'home'] },
     children: [
       {
         path: 'index',
         name: 'HomeIndex',
         component: () => import('@/views/home/index'),
-        meta: { title: 'Home', icon: ['fas', 'home'] }
+        meta: { title: '主页', icon: ['fas', 'home'] }
       }
     ]
   },
@@ -62,7 +62,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/summary/index',
     name: 'Summary',
-    meta: { title: 'Summary', icon: ['far', 'hourglass'] },
+    meta: { title: '摘要', icon: ['far', 'hourglass'] },
     children: [
       {
         path: 'index',
@@ -116,7 +116,7 @@ export const constantRouterMap = [
     component: Layout,
     name: 'MainChain',
     redirect: '/mainchain/block',
-    meta: { title: 'MainChain', icon: ['fas', 'link'] },
+    meta: { title: '主链', icon: ['fas', 'link'] },
     children: [
       // {
       //   path: 'index',
@@ -131,6 +131,13 @@ export const constantRouterMap = [
         meta: { title: 'block信息' }
       },
       {
+        path: 'blockinfo',
+        name: 'BlockInfo',
+        hidden: true,
+        component: () => import('@/views/mainchain/blockInfo'),
+        meta: { title: '区块详情' }
+      },
+      {
         path: 'node',
         name: 'Node',
         component: () => import('@/views/mainchain/node'),
@@ -141,6 +148,13 @@ export const constantRouterMap = [
         name: 'Transaction',
         component: () => import('@/views/mainchain/transaction'),
         meta: { title: '交易记录' }
+      },
+      {
+        path: 'transactioninfo',
+        name: 'TransactionInfo',
+        hidden: true,
+        component: () => import('@/views/mainchain/transactioninfo'),
+        meta: { title: '交易详情' }
       }
     ]
   },
@@ -149,7 +163,7 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/contract/index',
     name: 'Contract',
-    meta: { title: 'Contract', icon: ['fas', 'book'] },
+    meta: { title: '合约', icon: ['fas', 'book'] },
     children: [
       {
         path: 'index',
@@ -177,7 +191,7 @@ export const constantRouterMap = [
     hidden: true,
     redirect: '/import/index',
     name: 'Import',
-    meta: { title: 'Import & Export', icon: ['fas', 'sign-in-alt'] },
+    meta: { title: '导入/导出', icon: ['fas', 'sign-in-alt'] },
     children: [
       {
         path: 'index',

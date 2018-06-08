@@ -11,7 +11,7 @@
             :label="item.label">
           </el-table-column>
         </el-table>
-        <div class="pager">
+        <!-- <div class="pager">
           <div class="pager-inner">
             <el-pagination
               background
@@ -19,7 +19,7 @@
               :total="50">
             </el-pagination>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -40,11 +40,32 @@ export default {
   data() {
     return {
       columns,
-      data: []
+      data: [],
+      loading: null
     }
   },
   mounted() {
-    
+    this.initData()
+  },
+  methods: {
+    initData() {
+      this.loading = this.$loading()
+      this.$http.post('/block/adi/pbgns.do').then((res) => {
+        this.loading.close()
+        console.log('节点信息',res)
+        if(res.retCode == 1) {
+          if (res.nodes && res.nodes.length) {
+            this.data = res.nodes;
+          }
+        } else {
+          this.$message.error('获取节点信息出错')
+        }
+      }).catch((err) => {
+        this.loading.close()
+        this.$message.error('获取节点信息出错')
+        console.log('errr');
+      })
+    }
   }
 }
 </script>

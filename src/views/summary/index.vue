@@ -29,7 +29,19 @@
             </table>
           </el-col>
         </el-row>
-        <div style="margin-top: 10px;" v-for="(value,key) in node" v-if="key != 'address'" :key="key+0">
+        <div style="margin-top: 40px;" class="">
+          <el-row>
+            <el-col :span="4" :xs="8">锁定：</el-col>
+            <el-col :span="10" :xs="16">
+              <el-input v-model="lockValue" type="number" placeholder="请输入">
+                <template slot="append">
+                  <el-button @click="openLockDialog" type="primary">确定</el-button>
+                </template>
+              </el-input>
+            </el-col>
+          </el-row>
+        </div>
+        <div v-for="(value,key) in node" v-if="key != 'address'" :key="key+0">
           <el-row v-if="value.name">
           </el-row>
           <el-row v-else>
@@ -69,7 +81,7 @@
     </div>
     <div v-else class="node-info">
       <h3 style="margin: 10px 0 20px 0;">节点摘要信息</h3>
-      <p style="padding: 10% 0">没有获取到节点信息</p>
+      <p class="input-error" style="padding: 10% 0">没有获取到节点信息</p>
     </div>
     <div class="first-block-info">
       <h3>创世块信息</h3>
@@ -81,18 +93,37 @@
           </el-col>
         </el-row>
       </div>
-      <div v-else style="padding: 5% 0;">
+      <div v-else class="input-error" style="padding: 5% 0;">
         没有获取到创世块的信息
       </div>
     </div>
+    <el-dialog
+      :modal-append-to-body="false"
+      title="锁定"
+      :visible.sync="lockVisible"
+      @close="closeDialog"
+      center>
+      <div>
+        <el-input clearable v-model="lockpwd"  auto-complete="new-password" type="password" placeholder="请输入您的密码"></el-input>
+        <div class="input-error">{{lockPwdErr}}</div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="btn-block" type="primary" @click="lock">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import moment from 'moment'
+import moment from 'moment';
+import { numReg } from '@/utils/validate';
 export default {
   data() {
     return {
+      lockValue: '',
+      lockPwdErr: '',// 密码错误信息
+      lockpwd: '',
+      lockVisible: false,
       firstBlock: {},
       node:{
         dpos: {},
@@ -102,7 +133,6 @@ export default {
     }
   },
   mounted() {
-    this.initNode()
     this.init()
   },
   computed: {
@@ -135,6 +165,7 @@ export default {
       })
     },
     init() {
+      this.initNode()      
       this.$loading();
       this.$http({
         url:'/node/man/pbggb.do',
@@ -165,6 +196,51 @@ export default {
       }, function (e) {
         that.$message.error('复制失败，请稍后重试')
       })
+    },
+    lock() {
+      let pwd = this.lockpwd.trim();
+      if (!pwd.match(/^.{6,20}$/)) {
+        this.lockPwdErr = '请输入6-20位密码';
+        return false
+      } else {
+        this.lockPwdErr = ''
+      }
+      let amount = this.lockValue.trim();
+      this.$http.post('/node/man/pbslc.do',{
+        pwd,amount
+      }).then((res)=>{
+        if (res.retCode == '1') {
+          this.$message.success('锁定成功');
+          this.lockVisible = false;
+          this.init();
+        }else {
+          if (res.retMsg) {
+            this.$message.error(res.retMsg + ',锁定失败，请稍后重试');
+          }else {
+            this.$message.error('锁定失败，请稍后重试');
+          }
+        }
+      }).catch((err) => {
+        this.$message.error('锁定失败，请稍后重试');
+        this.lockVisible = false;
+        this.lockpwd = '';
+      })
+    },
+    openLockDialog() {
+      var reg = numReg();
+      let amount = this.lockValue.trim()
+      if (amount > 1e16) {
+        this.$message.warning('您输入的值过大')
+        return;
+      }
+      if (!reg.test(amount)) {
+        this.$message.warning('请输入正确的数字')
+        return ;
+      }
+      this.lockVisible = true;
+    },
+    closeDialog() {
+      this.lockpwd = ''
     }
   }
 }
@@ -172,8 +248,11 @@ export default {
 
 <style lang="scss">
   .node-info {
+    .el-col {
+      padding: 4px 0;
+    }
     border-bottom: 1px solid #eee;
-    line-height: 1.5em;
+    line-height: 2em;
     .node-item {
       .node-item-left {
         margin-right: 10px;

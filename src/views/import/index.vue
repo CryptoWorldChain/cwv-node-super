@@ -2,14 +2,14 @@
   <div>
     <div>
       <h3 class="title">
-        导入账户
+        导入私钥
       </h3>
       <el-row>
         <el-col :span="12" :xs="24">
           <div style="margin: 20px 0;">
             <el-input
               type="textarea"
-              :autosize="{ minRows: 10, maxRows: 16}"
+              :autosize="{ minRows: 2, maxRows: 4}"
               placeholder="请输入"
               v-model="privateKey">
             </el-input>
@@ -18,6 +18,13 @@
               type="password"
               placeholder="请输入您的密码"
               v-model="pwd"
+              auto-complete="new-password"
+            ></el-input>
+            <el-input
+              style="margin-bottom: 20px;"
+              type="password"
+              placeholder="请再次输入您的密码"
+              v-model="repeatpwd"
               auto-complete="new-password"
             ></el-input>
           </div>
@@ -36,6 +43,7 @@ export default {
     return {
       privateKey:'',
       pwd: '',
+      repeatpwd: '',
       loading: null
     }
   },
@@ -45,6 +53,7 @@ export default {
   methods: {
     createAccount() {
       var pwd = this.pwd.trim()
+      var repeatpwd = this.repeatpwd.trim()
       var keyStoreJsonStr = this.privateKey
       if (!keyStoreJsonStr) {
         this.$message.warning('请输入您需要导入的信息')
@@ -57,10 +66,14 @@ export default {
         this.$message.warning('请输入6～20位密码')
         return false
       }
+      if (pwd !== repeatpwd ) {
+        this.$message.warning('两次密码输入不一致');
+        return false
+      }
       this.loading = this.$loading()
-      this.$http.post('/node/man/pbsna.do', {
+      this.$http.post('/node/man/pbsnp.do', {
         pwd,
-        keyStoreJsonStr
+        priv:keyStoreJsonStr
       }).then((res) => {
         this.loading.close()
         console.log('set account by keystore',res)

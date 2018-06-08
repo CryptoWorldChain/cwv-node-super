@@ -31,3 +31,19 @@ export function validatAlphabets(str) {
   return reg.test(str)
 }
 
+/** 检验数字 */
+export function numReg(m, n) {
+  // m=m.toString();
+  // n=n.toString();
+  if (!m) {
+    m = 15
+  } else if(!m.match(/^[1-9]\d*$/)) {
+    m = 15
+  }
+  if (!n) {
+    n = 10
+  } else if (!n.match(/^[1-9]\d*$/)) {
+    n = 10
+  }
+  return new RegExp('^(((0(\\.\\d{0,' + n + '})?))|([1-9]\\d{0,' + (m - 1) + '}(\\.\\d{0,' + n + '})?))$')
+}

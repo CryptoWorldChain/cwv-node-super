@@ -37,3 +37,7 @@
 .el-checkbox__inner::after {
   border-width: 2px;
 }
+//table 
+.el-table .cell {
+  white-space: nowrap;
+}

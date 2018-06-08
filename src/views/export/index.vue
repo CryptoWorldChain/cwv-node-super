@@ -26,6 +26,7 @@
       :modal-append-to-body="false"
       title="导出"
       :visible.sync="modalVisible"
+      @close="closeModal"
       center>
       <div>
         <el-input v-model="pwd" @keyup.enter.native="exportKey" auto-complete="new-password" type="password" placeholder="请输入您的密码"></el-input>
@@ -55,6 +56,12 @@ export default {
   methods: {
     exportKey() {
       let pwd = this.pwd.trim()
+      if (!pwd.match(/^.{6,20}$/)){
+        this.pwdErr = '请输入6-20位密码';
+        return
+      } else {
+        this.pwdErr = '';
+      }
       this.loading = true;
       this.$http.post('/node/man/pbena.do', {
         pwd
@@ -88,6 +95,9 @@ export default {
       }, function (e) {
         that.$message.error('复制失败，请稍后重试')
       })
+    },
+    closeModal() {
+      this.pwd = '';
     }
   }
 }

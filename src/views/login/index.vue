@@ -1,18 +1,18 @@
 <template>
   <div class="login-container">
     <el-form class="login-form" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="login-title">Node Management</h3>
+      <h3 class="login-title">节点管理</h3>
       <input type="text" style="display: none;" />
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password"></svg-icon>
         </span>
         <el-input :type="pwdType" @keyup.enter.native="handleLogin($event)" v-model="loginForm.password" autoComplete="new-password"
-          placeholder="password"></el-input>
+          placeholder="密码"></el-input>
           <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
       </el-form-item>
       <el-button  size="big" type="primary" style="width:100%; margin: 10px 0;" :loading="loading" @click.native.prevent="handleLogin">
-        Sign in
+        登录
       </el-button>
     </el-form>
   </div>

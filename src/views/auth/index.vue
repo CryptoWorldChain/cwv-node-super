@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="server-err-page">
     <div>
-      <h4>请检查您的网络</h4>
+      <h4>网络请求似乎失败了</h4>
     </div>
   </div>
 </template>
@@ -12,6 +12,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+  .server-err-page {
+    h4 {
+      padding: 30px 20px;
+    }
+  }
 </style>

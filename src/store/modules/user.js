@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken ,removePassword} from '@/utils/auth'
+import { getToken, setToken, removeToken, setAddress } from '@/utils/auth'
 
 const user = {
   state: {
@@ -39,18 +39,13 @@ const user = {
       })
     },
 
-    // 获取用户信息
+    // 获取账户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
-          const data = response.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
+        getInfo().then(response => {
+          if (response.retCode == '1' && response.address) {
+            setAddress(response.address)
           }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)
