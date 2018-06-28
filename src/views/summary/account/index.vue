@@ -141,7 +141,6 @@ export default {
   },
   mounted() {
     this.initAddress()
-    this.initAddressInfo()
   },
   computed: {
     "transactions": function () {
@@ -188,6 +187,8 @@ export default {
       }
       if (address) {
         this.address = address;
+        this.loading.close()
+        this.initAddressInfo(address)
         return false;
       }
       this.$http.post('/node/man/pbgna.do', {
@@ -235,7 +236,7 @@ export default {
         this.repeatErr = '';
       }
       this.loading = this.$loading();
-      this.$http.post('/node/man/pbcna.do',{
+      this.$http.post('/node/man/pbcna.do', {
         pwd
       }).then((res) => {
         this.loading.close()
@@ -280,7 +281,6 @@ export default {
       }).then((res) => {
         this.loading.close()
         if (res.retCode == 1 && res.address ) {
-          console.log(res,'-----------')
           this.addressInfo = res.address
         } else {
           this.$message.error('获取账户详情错误')
@@ -299,6 +299,8 @@ export default {
           if (e.target.result) {
             that.keyStoreJsonStr = e.target.result;
             that.keystoreVisible = true;
+          } else {
+
           }
         }
         fileReader.onerror = function (e) {
@@ -374,7 +376,7 @@ export default {
     .el-row {
       // padding: 10px 0;
       .el-col {
-        margin: 20px 0;
+        margin: 10px 0;
       }
     }
   }

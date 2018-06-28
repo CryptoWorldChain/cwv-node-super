@@ -40,7 +40,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .wscn-http404 {
   position: relative;
-  width: 1200px;
+  // width: 1200px;
   padding: 0 100px;
   overflow: hidden;
   height: 100%;

@@ -106,8 +106,6 @@ export default {
                   block.reward = parseFloat(block.reward) ? parseFloat(block.reward) : 0;
                   return block;
               });
-          } else {
-            this.$message.error('没有获取到区块');
           }
       }).catch((err) => {
           this.loading.close()

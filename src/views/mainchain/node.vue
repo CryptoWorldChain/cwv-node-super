@@ -29,7 +29,7 @@
 var columns = [
   {prop: 'node_name',label: '节点名称'},
   {prop: 'uri', label: '节点URI'},
-  {prop: 'startup_time', label: '启动时间'},
+  {prop: 'age', label: '启动时间'},
   {prop: 'recv_cc', label: '接受量'},
   {prop: 'send_cc', label: '发送量'},
   {prop: 'node_idx', label: '节点ID'},
@@ -54,8 +54,12 @@ export default {
         this.loading.close()
         console.log('节点信息',res)
         if(res.retCode == 1) {
+          var that = this;
           if (res.nodes && res.nodes.length) {
-            this.data = res.nodes;
+            this.data = res.nodes.map((item,index) => {
+              item.age = that.timeago().format(item.startup_time)
+              return item
+            })
           }
         } else {
           this.$message.error('获取节点信息出错')

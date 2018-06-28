@@ -29,7 +29,7 @@
             </table>
           </el-col>
         </el-row>
-        <div style="margin-top: 40px;" class="">
+        <div style="margin-top: 40px;" class="" v-if="typeof accountInfo.balance != 'undefined'">
           <el-row>
             <el-col :span="4" :xs="8">锁定：</el-col>
             <el-col :span="10" :xs="16">
@@ -38,6 +38,12 @@
                   <el-button @click="openLockDialog" type="primary">确定</el-button>
                 </template>
               </el-input>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="4" :xs="8">账户余额：</el-col>
+            <el-col :span="10" :xs="16">
+              {{balance}}
             </el-col>
           </el-row>
         </div>
@@ -85,11 +91,17 @@
     </div>
     <div class="first-block-info">
       <h3>创世块信息</h3>
-      <div v-if="firstBlock.hash">
+      <div v-if="firstBlock.blockHash" class="first-block">
         <el-row>
           <el-col :span="4">Hash:   </el-col>
           <el-col :span="20">
-            <a href="javascript:;" class="ellipsis block" title="复制Hash" @click="copy">{{firstBlock.hash}}</a>
+            <a href="javascript:;" class="ellipsis block" title="复制Hash" @click="copy">{{firstBlock.blockHash}}</a>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4">Timestamp:   </el-col>
+          <el-col :span="20">
+            <a href="javascript:;" class="ellipsis block" title="复制Hash" @click="copy">{{firstBlock.age}}</a>
           </el-col>
         </el-row>
       </div>
@@ -130,7 +142,9 @@ export default {
         dpos: {},
         raft: {}
       },
-      moment
+      moment,
+      accountInfo: {},
+      loading: null
     }
   },
   mounted() {
@@ -139,13 +153,24 @@ export default {
   computed: {
     address() {
       var node = this.node;
-      return node.address ? node.address : '';
+      return node.address || '';
+    },
+    balance() {
+      let account = this.accountInfo;
+      if (account.balance) {
+        return account.balance;
+      }else {
+        return '0';
+      }
     }
   },
   methods: {
     // 账户详情
     goToAddress() {
       var address = this.address;
+      if (!address) {
+        return false
+      }
       this.$router.push({
         name:'Account',
         query:{
@@ -155,12 +180,12 @@ export default {
     },
     initNode() {
       this.$http.post('/node/man/pbgni.do').then((res) => {
-        console.log('----res',res.address)
         if (res.serverTime) {
           this.node = res;
           if (this.node && this.node.address) {
             let address = this.node.address;
             setAddress(address)
+            this.initAccount(address)
           } else {
             removeAddress()
           }
@@ -171,18 +196,34 @@ export default {
         console.log(err)
       })
     },
+    initAccount(address) {
+      this.loading = this.$loading()
+      this.$http.post('/block/adr/pbgad.do', {
+        address
+      }).then((res) => {
+        this.loading.close()
+        if (res.retCode == 1 && res.address ) {
+          this.accountInfo = res.address
+        } else {
+          this.$message.error('获取账户详情错误')
+        }
+      }).catch((err) => {
+        this.loading.close()
+      })
+    },
     init() {
       this.initNode()      
       this.$loading();
       this.$http({
-        url:'/node/man/pbggb.do',
+        url:'/block/blk/pbggb.do',
         method: 'post',
         data:{}
       }).then((res) => {
         this.$loading().close()
         console.log('res----',res)
-        if(res.retCode == '1') {
-          this.firstBlock = res;
+        if(res.retCode == '1' && res.block && res.block.header) {
+          this.firstBlock = res.block.header;
+          this.firstBlock.age = this.timeago().format(this.firstBlock.timestamp);
         } else {
 
         }
@@ -193,8 +234,8 @@ export default {
       })
     },
     copy() {
-      var message = this.firstBlock.hash ? this.firstBlock.hash : '';
-      var that = this;
+      var message = this.firstBlock.hash || ''
+      var that = this
       if (!message) {
         return ;
       }
@@ -206,28 +247,32 @@ export default {
     },
     lock() {
       let pwd = this.lockpwd.trim();
-      if (!pwd.match(/^.{6,20}$/)) {
-        this.lockPwdErr = '请输入6-20位密码';
+      if (!pwd.match(/^.{4,20}$/)) {
+        this.lockPwdErr = '请输入4-20位密码';
         return false
       } else {
         this.lockPwdErr = ''
       }
-      let amount = this.lockValue.trim();
+      let amount = this.lockValue.trim()
+      this.loading = this.$loading()
       this.$http.post('/node/man/pbslc.do',{
         pwd,amount
       }).then((res)=>{
+        this.loading.close()
         if (res.retCode == '1') {
-          this.$message.success('锁定成功');
+          this.$message.success('锁定成功')
           this.lockVisible = false;
+          this.lockValue = ''
           this.init();
         }else {
           if (res.retMsg) {
-            this.$message.error(res.retMsg + ',锁定失败，请稍后重试');
+            this.$message.error(res.retMsg + ',锁定失败，请稍后重试')
           }else {
             this.$message.error('锁定失败，请稍后重试');
           }
         }
       }).catch((err) => {
+        this.loading.close()
         this.$message.error('锁定失败，请稍后重试');
         this.lockVisible = false;
         this.lockpwd = '';
@@ -236,15 +281,16 @@ export default {
     openLockDialog() {
       var reg = numReg();
       let amount = this.lockValue.trim()
-      if (amount > 1e16) {
-        this.$message.warning('您输入的值过大')
-        return;
+      let balance = this.accountInfo.balance;
+      if (balance && amount > balance) {
+        this.$message.warning('锁定数量大于账户余额')
+        return
       }
       if (!reg.test(amount)) {
         this.$message.warning('请输入正确的数字')
-        return ;
+        return 
       }
-      this.lockVisible = true;
+      this.lockVisible = true
     },
     closeDialog() {
       this.lockpwd = ''
@@ -275,5 +321,10 @@ export default {
   .node-info h3, .first-block-info h3 {
     padding: 10px;
     background: #f5f5f5;
+  }
+  .first-block {
+    .el-row {
+      margin: 15px 0;
+    }
   }
 </style>

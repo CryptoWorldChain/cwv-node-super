@@ -65,20 +65,18 @@ export default {
       if (addressInfo.transactions) {
         var transactions = addressInfo.transactions;
         result = transactions.map((item,index) => {
-          console.log('eeeeeeeee',item.timeStamp);
           var froms = item.froms.map((obj,i) => {
-            if (obj.address) {
-              return obj.address
-            }
+            return obj.address || ''
           });
           var tos = item.tos.map((obj,i) => {
-            if (obj.address) {
-              return obj.address
-            }
+            return obj.address || ''
           });
           item.from = froms.join(',')
           item.to = tos.join(',')
           item.age = that.timeago().format(item.timeStamp)
+          if (item.status == 'null') {
+            item.status = ''
+          }
           return item
         })
       }

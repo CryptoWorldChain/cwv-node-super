@@ -2,7 +2,7 @@
   <div>
     <div>
       <h3 class="title">
-        导入私钥
+        导入keystore
       </h3>
       <div v-if="localAddress || netAddress">
         <h4 style="padding: 20px 0">您已经设置过账户</h4>
@@ -12,9 +12,9 @@
           <div style="margin: 20px 0;">
             <el-input
               type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
+              :autosize="{ minRows: 12, maxRows: 20}"
               placeholder="请输入"
-              v-model="privateKey">
+              v-model="keystore">
             </el-input>
             <el-input
               style="margin: 20px 0;"
@@ -45,7 +45,7 @@ import { getAddress, setAddress, removeAddress } from '@/utils/auth'
 export default {
   data() {
     return {
-      privateKey:'',
+      keystore:'',
       pwd: '',
       repeatpwd: '',
       netAddress: '',
@@ -63,7 +63,7 @@ export default {
     },
     getaddress() {
       if (getAddress()) {
-        return;
+        return
       }
       this.loading = this.$loading()
       this.$http.post('/node/man/pbgna.do', {
@@ -86,7 +86,7 @@ export default {
     createAccount() {
       var pwd = this.pwd.trim()
       var repeatpwd = this.repeatpwd.trim()
-      var keyStoreJsonStr = this.privateKey
+      var keyStoreJsonStr = this.keystore.trim()
       if (!keyStoreJsonStr) {
         this.$message.warning('请输入您需要导入的信息')
         return false
@@ -103,9 +103,9 @@ export default {
         return false
       }
       this.loading = this.$loading()
-      this.$http.post('/node/man/pbsnp.do', {
+      this.$http.post('/node/man/pbsna.do', {
         pwd,
-        priv:keyStoreJsonStr
+        keyStoreJsonStr
       }).then((res) => {
         this.loading.close()
         if (res.retCode == '1') {

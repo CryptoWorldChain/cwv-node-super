@@ -12,11 +12,11 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/node': {
-        target:'http://192.168.10.27:8000/fbs',
+        target:'http://192.168.10.22:8000/fbs',
         pathRewrite: {'^/node': ''}
       },
       '/block': {
-        target: 'http://192.168.10.27:8000/fbs',
+        target: 'http://192.168.10.22:8000/fbs',
         pathRewrite: {'^/block': ''}
       }
     },

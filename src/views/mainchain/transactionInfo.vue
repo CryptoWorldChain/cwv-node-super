@@ -4,7 +4,7 @@
       <h3 class="title">交易详情</h3>
       <div>
         <div v-if="!txInfo.txHash" class="input-error">{{transactionInfoErr}}</div>
-        <div v-else>
+        <div v-else class="tx-content">
           <el-row>
             <el-col :span="4" :xs="6">
               TxHash:
@@ -44,7 +44,7 @@
                       :key="item.prop"
                       :label="item.label">
                       <template slot-scope="scope">
-                        <!-- <router-link class="link" :to="{name:'TransactionInfo',query:{txHash: scope.row.txHash}}">{{ scope.row.txHash }}</router-link> -->
+                        <!-- <router-link class="link" :to="{name:'Account',query:{address: scope.row.address}}">{{ scope.row.address }}</router-link> -->
                         <span>{{ scope.row.address }}</span>
                       </template>
                     </el-table-column>
@@ -71,6 +71,7 @@
                       :key="item.prop"
                       :label="item.label">
                       <template slot-scope="scope">
+                        <!-- <router-link class="link" :to="{name:'Account',query:{address: scope.row.address}}">{{ scope.row.address }}</router-link> -->
                         <span>{{ scope.row.address }}</span>
                       </template>
                     </el-table-column>
@@ -162,6 +163,10 @@ export default {
   .transaction-detail {
     .el-row {
       padding: 10px 0;
+    }
+    .tx-content {
+      padding: 10px;
+      background: #fafafa;
     }
   }
 </style>

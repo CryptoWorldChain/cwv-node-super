@@ -201,6 +201,13 @@ export const constantRouterMap = [
         // meta: { title: 'Import', icon: ['fas', 'sign-in-alt'] }
       },
       {
+        path: 'importkeystore',
+        name: 'ImportKeystore',
+        component: () => import('@/views/import/importkeystore'),
+        meta: { title: '导入keystore' }
+        // meta: { title: 'Import', icon: ['fas', 'sign-in-alt'] }
+      },
+      {
         path: 'export',
         name: 'Export',
         component: () => import('@/views/export/index'),
