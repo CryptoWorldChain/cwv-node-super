@@ -6,18 +6,17 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/node': {
-        target:'http://192.168.10.22:8000/fbs',
+        target:'http://ta100.icwv.co:38000/fbs',
         pathRewrite: {'^/node': ''}
       },
-      '/block': {
-        target: 'http://192.168.10.22:8000/fbs',
-        pathRewrite: {'^/block': ''}
+      '/node': {
+        target: 'http://ta100.icwv.co:38000/fbs',
+        pathRewrite: {'^/node': ''}
       }
     },
 

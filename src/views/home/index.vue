@@ -11,6 +11,7 @@
       <div v-else-if="!set">
         <el-select v-model="net"
           placeholder="请选择网络"
+          :style='{width: "390px"}'
           @change="chooseNet"
           >
           <el-option
@@ -99,6 +100,7 @@ export default {
             this.set = true;
           }else {
             this.net = res.network;
+            this.set = true;
           }
         }
         this.neterr = ''
@@ -174,6 +176,7 @@ export default {
       width: 390px;
       min-width: 280px;
       margin: 20px 0;
+      margin-top: 50px;
       @media screen and (max-width: 780px) {
         width: 100%;
       }

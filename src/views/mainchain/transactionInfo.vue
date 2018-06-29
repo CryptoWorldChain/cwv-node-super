@@ -130,7 +130,7 @@ export default {
       let that = this;
       this.$http({
         method:"post",
-        url:"/block/trs/pbgtt.do",
+        url:"/node/trs/pbgtt.do",
         data:{
           txHash
         }

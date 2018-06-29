@@ -276,7 +276,7 @@ export default {
       if (!address) {
         return
       }
-      this.$http.post('/block/adr/pbgad.do', {
+      this.$http.post('/node/adr/pbgad.do', {
         address
       }).then((res) => {
         this.loading.close()

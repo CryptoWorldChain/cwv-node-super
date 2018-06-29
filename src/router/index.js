@@ -115,7 +115,7 @@ export const constantRouterMap = [
     path: '/mainchain',
     component: Layout,
     name: 'MainChain',
-    redirect: '/mainchain/block',
+    redirect: '/mainchain/node',
     meta: { title: '主链', icon: ['fas', 'link'] },
     children: [
       // {
@@ -127,7 +127,7 @@ export const constantRouterMap = [
       {
         path: 'block',
         name: 'Chain',
-        component: () => import('@/views/mainchain/block'),
+        component: () => import('@/views/mainchain/node'),
         meta: { title: 'block信息' }
       },
       {

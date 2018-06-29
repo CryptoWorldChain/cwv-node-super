@@ -78,7 +78,7 @@
                 </a>
               </div>
               <div v-else>
-                <el-button size="mini" type="primary" @click="goToAddress">去设置</el-button>
+                <el-button size="mini" type="primary" @click="setAddress">去设置</el-button>
               </div>
             </el-col>
           </el-row>
@@ -178,6 +178,11 @@ export default {
         }
       })
     },
+    setAddress() {
+      this.$router.push({
+        name:'Account'
+      })
+    },
     initNode() {
       this.$http.post('/node/man/pbgni.do').then((res) => {
         if (res.serverTime) {
@@ -198,7 +203,7 @@ export default {
     },
     initAccount(address) {
       this.loading = this.$loading()
-      this.$http.post('/block/adr/pbgad.do', {
+      this.$http.post('/node/adr/pbgad.do', {
         address
       }).then((res) => {
         this.loading.close()
@@ -212,10 +217,10 @@ export default {
       })
     },
     init() {
-      this.initNode()      
       this.$loading();
+      this.initNode()      
       this.$http({
-        url:'/block/blk/pbggb.do',
+        url:'/node/blk/pbggb.do',
         method: 'post',
         data:{}
       }).then((res) => {

@@ -50,7 +50,7 @@ export default {
   methods: {
     initData() {
       this.loading = this.$loading()
-      this.$http.post('/block/adi/pbgns.do').then((res) => {
+      this.$http.post('/node/adi/pbgns.do').then((res) => {
         this.loading.close()
         console.log('节点信息',res)
         if(res.retCode == 1) {

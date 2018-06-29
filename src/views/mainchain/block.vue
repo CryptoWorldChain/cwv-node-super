@@ -90,7 +90,7 @@ export default {
       if (!pageNo) {
           pageNo = 1;
       }
-      this.$http.post('/block/blk/pbgbb.do',{pageSize,pageNo}).then((res) => {
+      this.$http.post('/node/blk/pbgbb.do',{pageSize,pageNo}).then((res) => {
           this.loading.close()
           if (res.retCode == 1 && res.blocks) {
               this.totalPage = res.totalCount;
@@ -122,7 +122,7 @@ export default {
     initLates() {
       this.$http({
         method:'post',
-        url:'/block/blk/pbgtb.do'
+        url:'/node/blk/pbgtb.do'
       }).then((res) => {
         if (res.retCode == 1 && res.block) {
           console.log('latest --- block',res.block);

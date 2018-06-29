@@ -83,7 +83,7 @@ export default {
       var blockHeight = this.$route.query.height
       if(blockHash) {
         this.$loading()
-        this.$http.post('/block/blk/pbgha.do',{
+        this.$http.post('/node/blk/pbgha.do',{
           blockHash
         }).then((res) => {
           this.$loading().close()
@@ -110,7 +110,7 @@ export default {
           return
         }
         this.$loading()
-        this.$http.post('/block/blk/pbghe.do',{
+        this.$http.post('/node/blk/pbghe.do',{
           blockHeight
         }).then((res) => {
           this.$loading().close()
