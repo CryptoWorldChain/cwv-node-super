@@ -184,7 +184,9 @@ export default {
       })
     },
     initNode() {
+      this.loading = this.$loading();
       this.$http.post('/node/man/pbgni.do').then((res) => {
+        this.loading.close()
         if (res.serverTime) {
           this.node = res;
           if (this.node && this.node.address) {
@@ -198,6 +200,7 @@ export default {
           this.node = {};
         }
       }).catch((err) => {
+        this.loading.close();
         console.log(err)
       })
     },
@@ -217,14 +220,14 @@ export default {
       })
     },
     init() {
-      this.$loading();
-      this.initNode()      
+      this.initNode();
+      this.loading = this.$loading();
       this.$http({
         url:'/node/blk/pbggb.do',
         method: 'post',
         data:{}
       }).then((res) => {
-        this.$loading().close()
+        this.loading.close()
         console.log('res----',res)
         if(res.retCode == '1' && res.block && res.block.header) {
           this.firstBlock = res.block.header;
@@ -234,7 +237,7 @@ export default {
         }
       }).catch((err) => {
         // this.$message.error('未能请求到创世块信息，请稍后重试')
-        this.$loading().close()
+        this.loading.close()
         console.log('----err-----',err)
       })
     },
