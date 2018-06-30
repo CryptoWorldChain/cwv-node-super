@@ -89,7 +89,7 @@
       <h3 style="margin: 10px 0 20px 0;">节点摘要信息</h3>
       <p class="input-error" style="padding: 10% 0">没有获取到节点信息</p>
     </div>
-    <div class="first-block-info">
+    <div class="first-block-info" v-loading="firstLoading">
       <h3>创世块信息</h3>
       <div v-if="firstBlock.blockHash" class="first-block">
         <el-row>
@@ -133,6 +133,7 @@ import { getAddress, setAddress, removeAddress } from '@/utils/auth'
 export default {
   data() {
     return {
+      firstLoading: true,
       lockValue: '',
       lockPwdErr: '',// 密码错误信息
       lockpwd: '',
@@ -187,6 +188,7 @@ export default {
       this.loading = this.$loading();
       this.$http.post('/node/man/pbgni.do').then((res) => {
         this.loading.close()
+        this.initFirst();
         if (res.serverTime) {
           this.node = res;
           if (this.node && this.node.address) {
@@ -200,34 +202,38 @@ export default {
           this.node = {};
         }
       }).catch((err) => {
+        this.initFirst();
         this.loading.close();
         console.log(err)
       })
     },
     initAccount(address) {
-      this.loading = this.$loading()
+      this.$loading();
       this.$http.post('/node/adr/pbgad.do', {
         address
       }).then((res) => {
-        this.loading.close()
+        this.$loading().close()
         if (res.retCode == 1 && res.address ) {
           this.accountInfo = res.address
         } else {
           this.$message.error('获取账户详情错误')
         }
       }).catch((err) => {
-        this.loading.close()
+        this.$loading().close()
       })
     },
     init() {
       this.initNode();
-      this.loading = this.$loading();
+    },
+    initFirst () {
+      let that = this;
+      this.firstLoading = true;
       this.$http({
         url:'/node/blk/pbggb.do',
         method: 'post',
         data:{}
       }).then((res) => {
-        this.loading.close()
+        that.firstLoading = false;
         console.log('res----',res)
         if(res.retCode == '1' && res.block && res.block.header) {
           this.firstBlock = res.block.header;
@@ -237,7 +243,7 @@ export default {
         }
       }).catch((err) => {
         // this.$message.error('未能请求到创世块信息，请稍后重试')
-        this.loading.close()
+        that.firstLoading = false;
         console.log('----err-----',err)
       })
     },

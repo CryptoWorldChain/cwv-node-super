@@ -127,7 +127,7 @@ export const constantRouterMap = [
       {
         path: 'block',
         name: 'Chain',
-        component: () => import('@/views/mainchain/node'),
+        component: () => import('@/views/mainchain/block'),
         meta: { title: 'block信息' }
       },
       {
