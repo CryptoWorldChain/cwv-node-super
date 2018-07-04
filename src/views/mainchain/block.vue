@@ -35,7 +35,7 @@
           <el-pagination
             :small="device == 'mobile' ? true : false"
             background
-            layout="prev, pager, next"
+            layout="prev, pager, next, jumper"
             :total="totalPage"
             @current-change="pageChange">
           </el-pagination>

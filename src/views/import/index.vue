@@ -5,7 +5,7 @@
         导入私钥
       </h3>
       <div v-if="localAddress || netAddress">
-        <h4 style="padding: 20px 0">您已经设置过账户</h4>
+        <h4 style="padding: 20px 0">您已经设置过账户,<router-link :to="{name: 'Account'}" style="color: #409EFF;">查看账户</router-link></h4>
       </div>
       <el-row v-else>
         <el-col :span="12" :xs="24">

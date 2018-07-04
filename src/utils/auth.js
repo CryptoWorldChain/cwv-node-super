@@ -22,7 +22,7 @@ export function getPassword() {
 
 export function setPassword(password) {
   return Cookies.set(PasswordKey, password, {
-    expires: 1 / 2
+    expires: 1 / 24
   })
 }
 
@@ -31,7 +31,9 @@ export function removePassword() {
 }
 
 export function setAddress(address) {
-  return Cookies.set(addressKey, address)
+  return Cookies.set(addressKey, address, {
+    expires: 1 / 24
+  })
 }
 export function getAddress(address) {
   return Cookies.get(addressKey)

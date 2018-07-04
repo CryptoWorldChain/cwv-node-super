@@ -11,13 +11,13 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/node': {
-        target:'http://ta100.icwv.co:38000/fbs',
+        target: 'http://192.168.31.136:8000/fbs',
         pathRewrite: {'^/node': ''}
       },
-      '/node': {
-        target: 'http://ta100.icwv.co:38000/fbs',
-        pathRewrite: {'^/node': ''}
-      }
+      // '/node': {
+      //   target:'http://ta100.icwv.co:38000/fbs',
+      //   pathRewrite: {'^/node': ''}
+      // }
     },
 
     // Various Dev Server settings

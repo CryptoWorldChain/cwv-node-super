@@ -33,11 +33,12 @@
           <el-row>
             <el-col :span="4" :xs="8">锁定：</el-col>
             <el-col :span="10" :xs="16">
-              <el-input v-model="lockValue" type="number" placeholder="请输入">
+              <el-input v-model="lockValue" @input="lockBlur" type="number" placeholder="请输入">
                 <template slot="append">
                   <el-button @click="openLockDialog" type="primary">确定</el-button>
                 </template>
               </el-input>
+              <div class="input-error">{{lockInputErr}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -46,8 +47,30 @@
               {{balance}}
             </el-col>
           </el-row>
+          <div>token: </div>
+          <div v-for="(token) in tokens" :key="token.token">
+            <el-row>
+              <el-col :span="2" :xs="8">{{'name'}}:</el-col>
+              <el-col :span="4" :xs="16">
+                {{token.token}}
+              </el-col>
+              <el-col :span="2" :xs="8">{{'可用'}}:</el-col>
+              <el-col :span="4" :xs="16">
+                {{token.balance}}
+              </el-col>
+              <el-col :span="2" :xs="8">{{'锁定: '}}</el-col>
+              <el-col :span="8" :xs="16">
+                {{token.locked}}
+              </el-col>
+            </el-row>
+          </div>
         </div>
-        <div v-for="(value,key) in node" v-if="key != 'address'" :key="key+0">
+        <div v-if="addressMsg">
+          <div :class="{'input-error': addressMsg.match('详情')}">
+            {{ addressMsg }}
+          </div>
+        </div>
+        <div v-for="(value,key) in node" v-if="key != 'address' && key != 'cwstotal'" :key="key+0">
           <el-row v-if="value.name">
           </el-row>
           <el-row v-else>
@@ -136,9 +159,11 @@ export default {
       firstLoading: true,
       lockValue: '',
       lockPwdErr: '',// 密码错误信息
+      addressMsg: '',// 获取账户详情的提示信息
       lockpwd: '',
       lockVisible: false,
       firstBlock: {},
+      lockInputErr: '', //lock输入错误提示
       node:{
         dpos: {},
         raft: {}
@@ -163,9 +188,39 @@ export default {
       }else {
         return '0';
       }
+    },
+    tokens() {
+      let account = this.accountInfo;
+      let tokens = [];
+      if (tokens && typeof tokens.join === 'function') {
+        tokens = account.tokens;
+      }
+      console.log('----tokens',tokens);
+      return tokens;
+    },
+    lockedBalance() {
+      let lockedBalance = '';
+      let account = this.accountInfo;
+      lockedBalance = account.locked ? account.locked : '0';
+      return lockedBalance;
     }
   },
   methods: {
+    lockBlur () {
+      var reg = numReg();
+      let amount = this.lockValue.trim()
+      let balance = this.node.cwstotal;
+      if (balance && amount > balance) {
+        this.lockInputErr = '锁定数量大于账户余额';
+        return
+      }
+      if (!reg.test(amount)) {
+        this.lockInputErr = '请正确输入大于0的数字'
+        return 
+      } else {
+        this.lockInputErr = '';
+      }
+    },
     // 账户详情
     goToAddress() {
       var address = this.address;
@@ -208,18 +263,26 @@ export default {
       })
     },
     initAccount(address) {
-      this.$loading();
+      // this.$loading();
       this.$http.post('/node/adr/pbgad.do', {
         address
       }).then((res) => {
-        this.$loading().close()
-        if (res.retCode == 1 && res.address ) {
-          this.accountInfo = res.address
+        // this.$loading().close()
+        if (res.retCode == 1) {
+          if (res.address) {
+            this.accountInfo = res.address
+            this.addressMsg = '';
+          } else {
+            this.addressMsg = '节点启动中';
+            setTimeout(() => {
+              this.initAccount();
+            }, 5000);
+          }
         } else {
-          this.$message.error('获取账户详情错误')
+          this.addressMsg = '未能获取到账户详情,请稍后重试';
         }
       }).catch((err) => {
-        this.$loading().close()
+        // this.$loading().close()
       })
     },
     init() {
@@ -293,16 +356,8 @@ export default {
       })
     },
     openLockDialog() {
-      var reg = numReg();
-      let amount = this.lockValue.trim()
-      let balance = this.accountInfo.balance;
-      if (balance && amount > balance) {
-        this.$message.warning('锁定数量大于账户余额')
+      if (this.lockInputErr) {
         return
-      }
-      if (!reg.test(amount)) {
-        this.$message.warning('请输入正确的数字')
-        return 
       }
       this.lockVisible = true
     },

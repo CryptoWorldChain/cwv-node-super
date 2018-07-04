@@ -46,7 +46,8 @@ import { setAddress } from '@/utils/auth'
 let options = [
   {label:'MainNet', value:'mainnet'},
   {label:'TestNet', value:'testnet'},
-  {label:'DevNet', value:'devnet'}
+  {label:'DevNet', value:'devnet'},
+  {label: '单节点模式', value: ''}
 ]
 let devnet = 'devnet';
 let devOptions = (function () {
@@ -69,7 +70,7 @@ export default {
       options,
       devOptions,
       net:'',
-      devNet:'3',
+      devNet:'1',
       loading: false,
       settedNet:'',
       netloading: {}

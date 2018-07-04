@@ -1,7 +1,7 @@
 <template>
   <div class="account">
     <div class="account-inner">
-      <div v-if="address && typeof addressInfo.balance != 'undefined'">
+      <div v-if="address && !addressMsg">
         <h3 class="title">账户详情</h3>
         <el-button class="btn-block"  style="width: 20%;min-width: 100px;" type="primary" @click="route('/import/export')">
           导出
@@ -29,9 +29,14 @@
           </div>
         </div>
       </div>
-      <div v-else-if="address">
+      <div v-else-if="addressMsg" v-loading="addressMsg" element-loading-text="节点拼命启动中...">
         <div class="input-error" style="padding: 50px 0;">
-          获取账户详情失败,请重试
+          {{addressMsg}}
+        </div>
+      </div>
+      <div v-else-if="addressErr">
+        <div class="input-error" style="padding: 50px 0;">
+          {{addressErr}}
         </div>
       </div>
       <div v-else v-show="loaded">
@@ -43,7 +48,7 @@
             </el-card>
           </el-col>
           <el-col :span="8" :xs="24">
-            <el-upload
+            <!-- <el-upload
               class="upload-keystore"
               :before-upload="beforeUpload"
               :action="action"
@@ -51,7 +56,12 @@
               <el-card>
                 <el-button class="import-account" size="mini" type="primary" icon="el-icon-edit-outline">导入keystore</el-button>
               </el-card>
-            </el-upload>
+            </el-upload> -->
+              <el-card>
+                <el-button class="import-account" size="mini" type="primary" icon="el-icon-edit-outline">
+                  <router-link :to="{name:'ImportKeystore'}">导入keystore</router-link>
+                </el-button>
+              </el-card>
           </el-col>
           <el-col :span="8" :xs="24">
             <el-card>
@@ -116,7 +126,9 @@ export default {
   data() {
     return {
       address: '', //账户地址
-      getAddressErr: '', //账户获取错误信息
+      addressMsg: '',//账户详情(addressInfo)提示信息，
+      addressErr: '',// 账户详情错误信息
+      getAddressErr: '', //账户address获取错误信息
       addressInfo: {},
       addVisible: false,
       inputAddress: '',
@@ -180,6 +192,8 @@ export default {
   },
   methods: {
     initAddress(value) {
+      console.log(setAddress,this.setAddress);
+      console.log('--000000000')
       this.loading = this.$loading()
       let address = getAddress();
       if (value) {
@@ -262,7 +276,7 @@ export default {
       })
     },
     initAddressInfo(value) {
-      this.loading = this.$loading()
+      // this.loading = this.$loading()
       let address = '';
       if (this.$route.query.address) {
         address = this.$route.query.address
@@ -279,15 +293,27 @@ export default {
       this.$http.post('/node/adr/pbgad.do', {
         address
       }).then((res) => {
-        this.loading.close()
-        if (res.retCode == 1 && res.address ) {
-          this.addressInfo = res.address
-        } else {
-          this.$message.error('获取账户详情错误')
+        // this.loading.close()
+        if (res.retCode == 1){
+          if(res && res.address ) {
+            this.addressInfo = res.address;
+            this.addressMsg = '';
+          }else {
+            this.addressMsg = '节点启动中...';
+            setTimeout(() => {
+              this.initAddressInfo();
+            }, 5000);
+          }
+        }else {
+          this.addressErr = '没有获取到节点详情';
         }
       }).catch((err) => {
-        this.loading.close()
+        // this.loading.close();
+        this.addressErr = '没有获取到节点详情';
       })
+    },
+    getAddressInfoLoop() {
+      
     },
     beforeUpload(file) {
       var that = this;

@@ -22,7 +22,7 @@ import Layout from '../views/layout/Layout'
   }
 **/
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+  { path: '/login', name: 'Login', component: () => import('@/views/login/index'), hidden: true },
   {
     path: '/setpassword',
     component: () => import('@/views/setpassword/index'),
@@ -85,8 +85,8 @@ export const constantRouterMap = [
       {
         path: 'start',
         name: 'Start',
-        component: () => import('@/views/form/index'),
-        meta: { title: '启动' }
+        component: () => import('@/views/summary/start/index'),
+        meta: { title: '启动/停止' }
       }
     ]
   },
@@ -167,21 +167,28 @@ export const constantRouterMap = [
     children: [
       {
         path: 'index',
-        name: 'Erc721',
-        component: () => import('@/views/form/index'),
-        meta: { title: '发布ERC-721' }
+        component: () => import('@/views/contract/index'),
+        name: 'ContractList',
+        meta: { title: '合约' }
       },
+      // {
+      //   path: 'erc20',
+      //   name: 'Erc20',
+      //   component: () => import('@/views/contract/erc20'),
+      //   meta: { title: '发布ERC-20' }
+      // },
+      // {
+      //   path: 'erc721',
+      //   name: 'Erc721',
+      //   component: () => import('@/views/contract/erc721'),
+      //   meta: { title: '发布ERC-721' }
+      // },
       {
-        path: 'erc20',
-        name: 'Erc20',
-        component: () => import('@/views/form/index'),
-        meta: { title: '发布ERC-20' }
-      },
-      {
-        path: 'transfer',
-        name: 'Transfer',
-        component: () => import('@/views/form/index'),
-        meta: { title: '调用合约' }
+
+        path: 'invocation',
+        name: 'Invocation',
+        component: () => import('@/views/contract/invocation'),
+        meta: { title: '创建合约' }
       }
     ]
   },
@@ -189,9 +196,9 @@ export const constantRouterMap = [
     path: '/import',
     component: Layout,
     hidden: true,
-    redirect: '/import/index',
+    redirect: '/summary/account',
     name: 'Import',
-    meta: { title: '导入/导出', icon: ['fas', 'sign-in-alt'] },
+    meta: { title: '账户信息', icon: ['fas', 'sign-in-alt'] },
     children: [
       {
         path: 'index',
@@ -214,6 +221,12 @@ export const constantRouterMap = [
         meta: { title: '导出' }
       }
     ]
+  },
+  {
+    path: '/changepassword/index',
+    name: 'ChangePassword',
+    component: () => import('@/views/changepassword/index'),
+    hidden: true
   },
   { path: '*', redirect: '/404', hidden: true }
 ]

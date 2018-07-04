@@ -5,7 +5,7 @@
         导入keystore
       </h3>
       <div v-if="localAddress || netAddress">
-        <h4 style="padding: 20px 0">您已经设置过账户</h4>
+        <h4 style="padding: 20px 0">您已经设置过账户,<router-link :to="{name: 'Account'}" style="color: #409EFF;">查看账户</router-link></h4>
       </div>
       <el-row v-else>
         <el-col :span="12" :xs="24">
@@ -13,9 +13,20 @@
             <el-input
               type="textarea"
               :autosize="{ minRows: 12, maxRows: 20}"
-              placeholder="请输入"
+              placeholder="手动输入或者导入keystore文件"
               v-model="keystore">
             </el-input>
+            <div style="margin: 10px 0;">
+              <el-upload
+              class="upload-keystore"
+              :before-upload="beforeUpload"
+              :action="action"
+              >
+              <el-card>
+                <el-button class="import-account" size="mini" type="primary" icon="el-icon-edit-outline">导入keystore</el-button>
+              </el-card>
+            </el-upload>
+            </div>
             <el-input
               style="margin: 20px 0;"
               type="password"
@@ -50,7 +61,9 @@ export default {
       repeatpwd: '',
       netAddress: '',
       localAddress: '',
-      loading: null
+      loading: null,
+      keystoreVisible: false,
+      action: '/action'   //上传地址
     }
   },
   mounted() {
@@ -82,6 +95,32 @@ export default {
         this.$message.error('网络请求错误')
         this.loading.close()
       })
+    },
+    beforeUpload(file) {
+      var that = this;
+      var filename = file.name;
+      if (!filename.match(/\.keystore$/i)) {
+        that.$message.error('请选择后缀名为keystore的文件');
+        return false;
+      }
+      if (typeof FileReader == 'function') {
+        var fileReader = new FileReader();
+        fileReader.onload = function (e) {
+          // console.log('---file---reader',e.target.result);
+          if (e.target.result) {
+            that.keystore = e.target.result;
+          } else {
+
+          }
+        }
+        fileReader.onerror = function (e) {
+          that.$message.error('文件读取错误，请稍后重试');
+        }
+        fileReader.readAsText(file);
+      } else {
+        this.$message.warning('请使用chrome,firefox等现代浏览器');
+      }
+      return false
     },
     createAccount() {
       var pwd = this.pwd.trim()
@@ -122,6 +161,10 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+  .upload-keystore {
+    .el-upload {
+      display: block;
+    }
+  }
 </style>

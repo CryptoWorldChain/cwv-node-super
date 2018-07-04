@@ -110,7 +110,7 @@ export default {
           this.addressInfo = res.address
           this.errmsg = ''
         } else if (res.retCode != 1) {
-          this.$message.error('获取账户详情错误')
+          this.$message.error('未能获取到账户详情')
           this.errmsg = '获取账户详情出错'
         }
       }).catch((err) => {

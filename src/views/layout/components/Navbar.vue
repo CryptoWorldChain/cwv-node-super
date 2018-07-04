@@ -9,12 +9,15 @@
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
+        <el-dropdown-item>
+          首 页
+        </el-dropdown-item>
         </router-link>
+        <!-- <el-dropdown-item divided>
+          <span @click="changepassword" style="display:block;">修改密码</span>
+        </el-dropdown-item> -->
         <el-dropdown-item divided>
-          <span @click="logout" style="display:block;">LogOut</span>
+          <span @click="logout" style="display:block;">登 出</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -55,8 +58,13 @@ export default {
       // })
       removeToken()
       removeAddress()
-      // removePassword()
+      removePassword()
       location.reload()
+    },
+    changepassword() {
+      this.$router.push({
+        name: 'ChangePassword'
+      })
     }
   }
 }
