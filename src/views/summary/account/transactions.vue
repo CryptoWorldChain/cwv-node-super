@@ -65,12 +65,18 @@ export default {
       if (addressInfo.transactions) {
         var transactions = addressInfo.transactions;
         result = transactions.map((item,index) => {
-          var froms = item.froms.map((obj,i) => {
-            return obj.address || ''
-          });
-          var tos = item.tos.map((obj,i) => {
-            return obj.address || ''
-          });
+          var froms = [];
+          if (item.froms) {
+            froms = item.froms.map((obj,i) => {
+              return obj.address || ''
+            });
+          }
+          var tos = [];
+          if (item.tos) {
+            tos  = item.tos.map((obj,i) => {
+              return obj.address || ''
+            });
+          }
           item.from = froms.join(',')
           item.to = tos.join(',')
           item.age = that.timeago().format(item.timeStamp)

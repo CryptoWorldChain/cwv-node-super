@@ -32,6 +32,7 @@
             width="180">
           </el-table-column>
         </el-table>
+        <div class="input-error contract-error">{{ contractErr }}</div>
       </div>
     </div>
   </div>
@@ -41,26 +42,36 @@
 export default {
   data() {
     return {
-      data: []
+      data: [],
+      contractErr: ''
     }
   },
   mounted() {
+    this.$loading()
     this.$http.post('/node/man/pbglc.do').then((res) => {
-      if (res && res.retCode == 1 && res.contracts && typeof res.contracts.join == 'function') {
-        this.data = res.contracts.map((item,index) => {
-          item.time = this.timeago().format(item.timestamp);
-          return item;
-        })
+      this.$loading().close()
+      if (res && res.retCode == 1) {
+        if (res.contracts && typeof res.contracts.join == 'function') {
+          this.contractErr = '';
+          this.data = res.contracts.map((item,index) => {
+            item.time = this.timeago().format(item.timestamp);
+            return item;
+          })
+        }
       }else {
         this.$message.error('未能请求到合约')
       }
     }).catch((err) => {
-      this.$message.error('未能请求到合约');
+      this.$loading().close()
+      // this.$message.error('未能请求到合约');
+      this.contractErr = '未能请求到合约数据，请稍后重试';
     })
   },
 }
 </script>
 
-<style>
-
+<style lang="scss">
+  .contract-error {
+    padding: 20px 0;
+  }
 </style>

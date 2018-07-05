@@ -189,6 +189,12 @@ export const constantRouterMap = [
         name: 'Invocation',
         component: () => import('@/views/contract/invocation'),
         meta: { title: '创建合约' }
+      },
+      {
+        path: 'token',
+        name: 'Token',
+        component: () => import('@/views/contract/token'),
+        meta: { title: '发布token' }
       }
     ]
   },

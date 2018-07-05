@@ -56,11 +56,11 @@
               </el-col>
               <el-col :span="2" :xs="8">{{'可用'}}:</el-col>
               <el-col :span="4" :xs="16">
-                {{token.balance}}
+                {{token.balance || 0}}
               </el-col>
               <el-col :span="2" :xs="8">{{'锁定: '}}</el-col>
               <el-col :span="8" :xs="16">
-                {{token.locked}}
+                {{token.locked || 0}}
               </el-col>
             </el-row>
           </div>

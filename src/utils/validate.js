@@ -37,10 +37,12 @@ export function numReg(m, n) {
   // n=n.toString();
   if (!m) {
     m = 15
-  } else if(!m.match(/^[1-9]\d*$/)) {
+  } else if (!m.match(/^[1-9]\d*$/)) {
     m = 15
   }
-  if (!n) {
+  if ( n == '0') {
+    n = '0'
+  } else if (!n) {
     n = 10
   } else if (!n.match(/^[1-9]\d*$/)) {
     n = 10

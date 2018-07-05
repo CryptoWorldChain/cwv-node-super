@@ -163,16 +163,16 @@ export default {
       if (addressInfo.transactions) {
         var transactions = addressInfo.transactions;
         result = transactions.map((item,index) => {
-          var froms = item.froms.map((obj,i) => {
+          var froms = item.froms ? item.froms.map((obj,i) => {
             if (obj.address) {
               return obj.address
             }
-          });
-          var tos = item.tos.map((obj,i) => {
+          }) : [];
+          var tos = item.tos ? item.tos.map((obj,i) => {
             if (obj.address) {
               return obj.address
             }
-          });
+          }) : [];
           item.from = froms.join(',')
           item.to = tos.join(',')
           item.age = that.timeago().format(item.timeStamp)

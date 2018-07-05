@@ -8,16 +8,17 @@
         <el-input
           type="textarea"
           :autosize="{minRows:4,maxRows:8}"
-          placeholder="请输入合约代码"
+          placeholder="请输入密码"
           v-model="contract"></el-input>
       </div>
       <div class="input-pass">
         <el-input type="password" v-model="pwd" placeholder="请输入创建合约的密码">
 
         </el-input>
-        <el-input type="password" v-model="checkpwd" placeholder="请再次输入密码">
+        <div class="input-error">{{pwdErr}}</div>
+        <!-- <el-input type="password" v-model="checkpwd" placeholder="请再次输入密码">
 
-        </el-input>
+        </el-input> -->
         <div class="btn-center">
           <el-button type="primary" @click="create">创建</el-button>
         </div>
@@ -33,6 +34,7 @@ export default {
       contract: '',//合约内容
       pwd: '',
       checkpwd: '',
+      pwdErr: '',
       craeteDisabled: true
     }
   },
@@ -42,6 +44,16 @@ export default {
     },
     create() {
       let pwd = this.pwd.trim();
+      if (!pwd) {
+        this.pwdErr = '请输入密码';
+      } else if(pwd.length > 20 || pwd.length < 6) {
+        this.pwdErr = '密码应该在6～20位之间'
+      } else {
+        this.pwdErr = '';
+      }
+      if (this.pwdErr) {
+        return false;
+      }
       let code = this.contract.trim();
       this.$loading();
       this.$http.post('/node/man/pbcct.do',{
@@ -52,6 +64,9 @@ export default {
         console.log('----res----',res);
         if (res.retCode == 1) {
           this.$message.success('创建成功。');
+          this.$router.push({
+            name: 'Contract'
+          })
         } else if(res.retMsg) {
           this.$message.error(res.retMsg,'创建失败，请稍后重试');
         }else {
@@ -85,7 +100,7 @@ export default {
   .input-pass {
     margin-top: 40px;
     .el-input {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
   }
 </style>
