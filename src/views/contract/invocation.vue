@@ -8,11 +8,11 @@
         <el-input
           type="textarea"
           :autosize="{minRows:4,maxRows:8}"
-          placeholder="请输入密码"
+          placeholder="请输入"
           v-model="contract"></el-input>
       </div>
       <div class="input-pass">
-        <el-input type="password" v-model="pwd" placeholder="请输入创建合约的密码">
+        <el-input type="password" v-model="pwd" placeholder="请输入密码">
 
         </el-input>
         <div class="input-error">{{pwdErr}}</div>

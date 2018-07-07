@@ -83,7 +83,7 @@ a:hover {
   overflow-y: auto;
 }
 .app-wrapper {
-  padding: 16px;
+  padding: 10px;
 }
 .clear:before,.clear:after {
 	content:'';
@@ -161,6 +161,15 @@ a:hover {
     color: #409EFF;
   }
 }
+//color
+
+.color-yellow {
+  color: #EB9938;
+ }
+ .color-red {
+   color: #D0382C;
+ }
+
 //table
 .border-table {
   border-collapse:collapse;

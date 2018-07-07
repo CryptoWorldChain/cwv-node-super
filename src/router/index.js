@@ -76,12 +76,12 @@ export const constantRouterMap = [
         component: () => import('@/views/summary/account/index'),
         meta: { title: '账户信息' }
       },
-      {
-        path: 'network',
-        name: 'Network',
-        component: () => import('@/views/home/index'),
-        meta: { title: 'Net' }
-      },
+      // {
+      //   path: 'network',
+      //   name: 'Network',
+      //   component: () => import('@/views/home/index'),
+      //   meta: { title: 'Net' }
+      // },
       {
         path: 'start',
         name: 'Start',

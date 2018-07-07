@@ -14,23 +14,23 @@
           </el-table-column>
           <el-table-column
             prop="codeHash"
-            label="codeHash">
+            label="codeHash"
+            width="300">
           </el-table-column>
           <el-table-column
             prop="code"
-            label="code"
-            width="180">
+            label="code">
           </el-table-column>
           <el-table-column
             prop="data"
             label="data"
             width="180">
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             prop="time"
             label="time"
             width="180">
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
         <div class="input-error contract-error">{{ contractErr }}</div>
       </div>

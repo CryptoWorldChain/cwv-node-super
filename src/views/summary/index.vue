@@ -12,6 +12,10 @@
                 <td  v-if="key == 'startUpTime'">
                   <timeago :since="value"></timeago>
                 </td>
+                <td v-else-if="key == 'name'">
+                  {{value}}
+                  <el-button type="primary" size="small" class="float-right" @click="openNameModal('dpos')">修改</el-button>
+                </td>
                 <td v-else>{{value}}</td>
               </tr>
             </table>
@@ -24,6 +28,10 @@
                 <td  v-if="key == 'startUpTime'">
                   <timeago :since="value"></timeago>
                 </td>
+                <td v-else-if="key == 'name'">
+                  {{value}}
+                  <el-button type="primary" size="small" class="float-right" @click="openNameModal('raft')">修改</el-button>
+                </td>
                 <td v-else>{{value}}</td>
               </tr>
             </table>
@@ -33,7 +41,7 @@
           <el-row>
             <el-col :span="4" :xs="8">锁定：</el-col>
             <el-col :span="10" :xs="16">
-              <el-input v-model="lockValue" @input="lockBlur" type="number" placeholder="请输入">
+              <el-input v-model="lockValue" @input="lockBlur" @blur="lockBlur" type="number" placeholder="请输入">
                 <template slot="append">
                   <el-button @click="openLockDialog" type="primary">确定</el-button>
                 </template>
@@ -50,16 +58,16 @@
           <div>token: </div>
           <div v-for="(token) in tokens" :key="token.token">
             <el-row>
-              <el-col :span="2" :xs="8">{{'name'}}:</el-col>
-              <el-col :span="4" :xs="16">
+              <el-col :span="4" :xs="8">{{'name'}}:</el-col>
+              <el-col :span="2" :xs="16">
                 {{token.token}}
               </el-col>
               <el-col :span="2" :xs="8">{{'可用'}}:</el-col>
-              <el-col :span="4" :xs="16">
+              <el-col :span="6" :xs="16">
                 {{token.balance || 0}}
               </el-col>
               <el-col :span="2" :xs="8">{{'锁定: '}}</el-col>
-              <el-col :span="8" :xs="16">
+              <el-col :span="6" :xs="16">
                 {{token.locked || 0}}
               </el-col>
             </el-row>
@@ -146,6 +154,20 @@
         <el-button class="btn-block" type="primary" @click="lock">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      :modal-append-to-body="false"
+      :title="'修改'+ algorithm + '名称'"
+      :visible.sync="nameModal"
+      @close="closeNameModal"
+      center>
+      <div>
+        <el-input clearable v-model="name"  auto-complete="new-password" type="text" placeholder="请输入新的名称，只能是英文、数字或者'-'"></el-input>
+        <div class="input-error">{{nameErr}}</div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="btn-block" type="primary" @click="changeName">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -170,11 +192,16 @@ export default {
       },
       moment,
       accountInfo: {},
-      loading: null
+      loading: null,
+      nameModal: false,
+      algorithm: '',
+      name: '',
+      nameErr: ''
     }
   },
   mounted() {
     this.init()
+    this.changeName('how');
   },
   computed: {
     address() {
@@ -193,7 +220,11 @@ export default {
       let account = this.accountInfo;
       let tokens = [];
       if (tokens && typeof tokens.join === 'function') {
-        tokens = account.tokens;
+        tokens = account.tokens.filter((item,index) => {
+          if (item.token && item.token.toUpperCase() == 'CWS') {
+            return item;
+          }
+        })
       }
       console.log('----tokens',tokens);
       return tokens;
@@ -206,18 +237,30 @@ export default {
     }
   },
   methods: {
+    openNameModal(value) {
+      this.nameModal = true;
+      this.algorithm = value;
+    },
+    closeNameModal () {
+      this.name = '';
+      this.nameModal = false;
+    },
     lockBlur () {
       var reg = numReg();
       let amount = this.lockValue.trim()
       let balance = this.node.cwstotal;
-      if (balance && amount > balance) {
-        this.lockInputErr = '锁定数量大于账户余额';
-        return
-      }
+      // if (balance && amount > balance) {
+      //   this.lockInputErr = '锁定数量大于账户余额';
+      //   return
+      // }
       if (!reg.test(amount)) {
-        this.lockInputErr = '请正确输入大于0的数字'
+        this.lockInputErr = '请输入正确的数字'
         return 
       } else {
+        if (amount <= 0) {
+          this.lockInputErr = '请输入大于0的数字';
+          return false;
+        }
         this.lockInputErr = '';
       }
     },
@@ -272,8 +315,9 @@ export default {
           if (res.address) {
             this.accountInfo = res.address
             this.addressMsg = '';
+            console.log('-----account------info-------',this.accountInfo)
           } else {
-            this.addressMsg = '节点启动中';
+            this.addressMsg = '节点启动中，请耐心等候。';
             setTimeout(() => {
               this.initAccount();
             }, 5000);
@@ -356,13 +400,50 @@ export default {
       })
     },
     openLockDialog() {
+      let amount = this.lockValue.trim();
+      if (amount <=0 ) {
+        this.lockInputErr = '请输入正确的数字';
+      } else {
+        this.lockInputErr = '';
+      } 
       if (this.lockInputErr) {
-        return
+        return false;
       }
       this.lockVisible = true
     },
     closeDialog() {
       this.lockpwd = ''
+    },
+    changeName() {
+      let type = this.algorithm;
+      let name = this.name.trim();
+      if (!(type == 'dpos' || type == 'raft')) {
+        return false;
+      }
+      if (!name) {
+        return false;
+      }
+      if (!name.match(/^[\w-]{6,32}$/)) {
+        this.nameErr = '请输入6～32位合格的字符';
+        // this.$message.warning('请正确输入6～32位字符');
+        return false;
+      } else {
+        this.nameErr = '';
+      }
+      this.$loading();
+      this.$http.get('/node/pzp/pbchn.do?bd={"nid":"' + type + '","newname":"'+name+'"}').then((res) => {
+        this.$loading().close();
+        if (typeof res.ret_code != 'undefined' && res.ret_code == '0') {
+          this.$message.success('名称修改成功');
+          this.initNode();
+          this.nameModal = false;
+        } else {
+          this.$message.error('名称修改失败,请稍后重试');
+        }
+      }).catch((err) => {
+        this.$loading().close();
+        this.$message.error('名称修改失败,请稍后重试');
+      })
     }
   }
 }

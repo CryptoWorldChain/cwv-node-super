@@ -23,6 +23,18 @@
               {{transaction_amount}}
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="24">
+              token:
+            </el-col>
+            <el-col :span="24">
+              <el-table :data="tokens">
+                <el-table-column prop="token" label="token"></el-table-column>
+                <el-table-column prop="balance" label="余额"></el-table-column>
+                <el-table-column prop="locked" label="锁定"></el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
           <div>
             <div style="margin: 20px 0;padding: 10px 0;border-bottom: 1px solid #eee;">交易：</div>
             <Transactions :address="address"/>
@@ -145,7 +157,7 @@ export default {
       repeatKeystorePass: '',
       keystorePassErr: '',
       repeatKeystorePassErr: '',
-      keyStoreJsonStr: ''
+      keyStoreJsonStr: '',
     }
   },
   components: {
@@ -188,6 +200,16 @@ export default {
       } else {
         return 0;
       }
+    },
+    tokens() {
+      let tokens = [];
+      var addressInfo = this.addressInfo;
+      console.log(addressInfo);
+      if (addressInfo.tokens && typeof addressInfo.tokens.join === 'function') {
+        tokens = addressInfo.tokens;
+      }
+      console.log('00000token',addressInfo,tokens);
+      return tokens;
     }
   },
   methods: {

@@ -15,9 +15,11 @@ import VueClipboard from 'vue-clipboard2'
 import VueTimeago from 'vue-timeago'
 import timeago from 'timeago.js'
 import moment from 'moment'
+var accounting = require('accounting')
 
 Vue.prototype.moment = moment
 Vue.prototype.timeago = timeago
+Vue.prototype.accounting = accounting
 
 Vue.use(VueTimeago, {
   name: 'Timeago', // Component name, `Timeago` by default

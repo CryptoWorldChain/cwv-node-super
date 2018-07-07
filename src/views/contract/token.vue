@@ -126,15 +126,16 @@ export default {
         address
       }).then((res) => {
         this.$loading().close()
-        if (res && res.retCode == 1) {
+        if (res && res.retCode == '1') {
           if (res.tokens && typeof res.tokens.join == 'function') {
             this.data = res.tokens.map((item,index) => {
               item.time = this.timeago().format(item.timestamp)
               return item;
             })
             this.tokenErr = '';
+          } else {
+            // this.tokenErr = '没有获取到token';
           }
-          this.tokenErr = '没有获取到token';
         } else {
           // this.$message.error('没有获取到token')
           this.tokenErr = '没有获取到token';
