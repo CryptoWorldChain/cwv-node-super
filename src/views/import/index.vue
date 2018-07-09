@@ -112,6 +112,8 @@ export default {
           this.$message.success('导入账户成功')
         } else if (res.retMsg) {
           this.$message.error(res.retMsg + ',导入失败')
+        }else {
+          this.$message.error('导入失败，请稍后重试')
         }
       }).catch((err) => {
         this.loading.close()

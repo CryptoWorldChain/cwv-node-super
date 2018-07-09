@@ -161,7 +161,7 @@
       @close="closeNameModal"
       center>
       <div>
-        <el-input clearable v-model="name"  auto-complete="new-password" type="text" placeholder="请输入新的名称，只能是英文、数字或者'-'"></el-input>
+        <el-input clearable v-model="name"  auto-complete="new-password" type="text" placeholder="请输入新的名称，只能是英文、数字或者—"></el-input>
         <div class="input-error">{{nameErr}}</div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -453,6 +453,15 @@ export default {
   .node-info {
     .el-col {
       padding: 4px 0;
+      max-width: 600px;
+    }
+    & td {
+      max-width: 500px;
+    }
+    & * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     border-bottom: 1px solid #eee;
     line-height: 2em;
