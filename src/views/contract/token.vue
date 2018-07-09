@@ -198,11 +198,11 @@ export default {
 
 <style lang="scss">
   .token-con {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
   }
   .create-wrapper {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 30px 0;
     .btn-block {

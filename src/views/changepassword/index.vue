@@ -117,13 +117,13 @@ export default {
             name: 'Login'
           })
         }else if (res.retMsg) {
-          this.$message.error(res.retMsg + ',修改失败，轻稍后重试');
+          this.$message.error(res.retMsg + ',修改失败，请稍后重试');
         } else {
-          this.$message.error('密码修改失败，轻稍后重试');
+          this.$message.error('密码修改失败，请稍后重试');
         }
       }).catch((err) => {
         this.$loading().close();
-        this.$message.error('密码修改失败，轻稍后重试');
+        this.$message.error('密码修改失败，请稍后重试');
       })
     }
   }

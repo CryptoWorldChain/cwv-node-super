@@ -14,6 +14,9 @@
           </el-col>
         </el-row>
       </div>
+      <div class="start-stop-content">
+        {{msg}}
+      </div>
     </div>
   </div>
 </template>
@@ -23,7 +26,8 @@ export default {
   data() {
     return {
       dockerList: [],
-      name: ''
+      name: '',
+      msg: ''
     }
   },
   computed: {
@@ -62,29 +66,35 @@ export default {
       return uri;
     },
     start() {
-      let url = this.func('start');
-      this.$http.get(url).then((res) => {
-
-      }).catch((err) => {
-        this.$message.error('节点启动失败，请稍后重试');
-      })
-    },
-    restart() {
-      let url = this.func('restart');
-      this.$http.get(url).then((res) => {
-
-      }).catch((err) => {
-        this.$message.error('节点重启失败，请稍后重试');
-      })
+      this.msg = '启动命令：';
     },
     stop() {
-      let url = this.func('stop');
-      this.$http.get(url).then((res) => {
-
-      }).catch((err) => {
-        this.$message.error('节点停止失败，请稍后重试');
-      })
+      this.msg = '停止命令：';
     }
+    // start() {
+    //   let url = this.func('start');
+    //   this.$http.get(url).then((res) => {
+
+    //   }).catch((err) => {
+    //     this.$message.error('节点启动失败，请稍后重试');
+    //   })
+    // },
+    // restart() {
+    //   let url = this.func('restart');
+    //   this.$http.get(url).then((res) => {
+
+    //   }).catch((err) => {
+    //     this.$message.error('节点重启失败，请稍后重试');
+    //   })
+    // },
+    // stop() {
+    //   let url = this.func('stop');
+    //   this.$http.get(url).then((res) => {
+
+    //   }).catch((err) => {
+    //     this.$message.error('节点停止失败，请稍后重试');
+    //   })
+    // }
   }
 }
 </script>
@@ -104,5 +114,9 @@ export default {
         }
       }
     }
+  }
+  .start-stop-content {
+    margin-top: 20px;
+    padding: 20px;
   }
 </style>

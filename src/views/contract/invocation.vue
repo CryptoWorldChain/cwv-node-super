@@ -7,9 +7,10 @@
       <div>
         <el-input
           type="textarea"
-          :autosize="{minRows:4,maxRows:8}"
+          :autosize="{minRows:8,maxRows:16}"
           placeholder="请输入"
           v-model="contract"></el-input>
+          <div class="input-error">{{ contractErr }}</div>
       </div>
       <div class="input-pass">
         <el-input type="password" v-model="pwd" placeholder="请输入密码">
@@ -32,6 +33,7 @@ export default {
   data() {
     return {
       contract: '',//合约内容
+      contractErr: '',
       pwd: '',
       checkpwd: '',
       pwdErr: '',
@@ -44,6 +46,12 @@ export default {
     },
     create() {
       let pwd = this.pwd.trim();
+      let code = this.contract.trim();
+      if (!code) {
+        this.contractErr = '请输入合约';
+      } else {
+        this.contractErr = '';
+      }
       if (!pwd) {
         this.pwdErr = '请输入密码';
       } else if(pwd.length > 20 || pwd.length < 6) {
@@ -51,10 +59,9 @@ export default {
       } else {
         this.pwdErr = '';
       }
-      if (this.pwdErr) {
+      if (this.pwdErr || this.contractErr) {
         return false;
       }
-      let code = this.contract.trim();
       this.$loading();
       this.$http.post('/node/man/pbcct.do',{
         pwd,

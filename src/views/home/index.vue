@@ -85,7 +85,7 @@
                 </el-option>
               </el-select>
               <el-select v-if="net == 'devnet'" v-model="devNet"
-                :style="{width: '100px'}"
+                :style="{width: '120px'}"
                 placeholder="请选择dev网络"
                 @change="chooseDevNet"
                 >
@@ -168,9 +168,10 @@ let devOptions = (function () {
   var num = 32;
   var result = [];
   for(var i = 0;i < num; i ++) {
-    if (i % 2 == 1) {
+    if (i == 1) {
       var obj = {}
       obj.value = i + '';
+      obj.label = '单节点模式';
       result.push(obj)
     }
   }
