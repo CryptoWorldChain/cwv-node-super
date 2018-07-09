@@ -89,11 +89,7 @@ export default {
       var that = this;
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          this.doSubmit();
-          this.removeCookies();
-          that.$router.push({
-            name: 'Login'
-          })
+          this.changePassword();
         } else {
           console.log('error submit!!');
           return false;
@@ -107,6 +103,28 @@ export default {
     },
     doSubmit () {
       //修改密码
+    },
+    changePassword() {
+      this.$loading();
+      let oldpass = this.loginForm.oldpass;
+      let newpass = this.loginForm.newpass;
+      this.$http.post('man/pbcpw.do',{old: oldpass, new: newpass}).then((res) => {
+        this.$loading().close();
+        if (res && res.retCode == '1') {
+          this.removeCookies();
+          this.$message.success('密码修改成功');
+          this.$router.push({
+            name: 'Login'
+          })
+        }else if (res.retMsg) {
+          this.$message.error(res.retMsg + ',修改失败，轻稍后重试');
+        } else {
+          this.$message.error('密码修改失败，轻稍后重试');
+        }
+      }).catch((err) => {
+        this.$loading().close();
+        this.$message.error('密码修改失败，轻稍后重试');
+      })
     }
   }
 }

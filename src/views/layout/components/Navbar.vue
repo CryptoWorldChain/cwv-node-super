@@ -13,9 +13,9 @@
           首 页
         </el-dropdown-item>
         </router-link>
-        <!-- <el-dropdown-item divided>
+        <el-dropdown-item divided>
           <span @click="changepassword" style="display:block;">修改密码</span>
-        </el-dropdown-item> -->
+        </el-dropdown-item>
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">登 出</span>
         </el-dropdown-item>
