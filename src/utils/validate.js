@@ -40,7 +40,7 @@ export function numReg(m, n) {
   } else if (!m.match(/^[1-9]\d*$/)) {
     m = 15
   }
-  if ( n == '0') {
+  if (n == '0') {
     n = '0'
   } else if (!n) {
     n = 10
@@ -48,4 +48,12 @@ export function numReg(m, n) {
     n = 10
   }
   return new RegExp('^(((0(\\.\\d{0,' + n + '})?))|([1-9]\\d{0,' + (m - 1) + '}(\\.\\d{0,' + n + '})?))$')
+}
+export function intReg(m) {
+  if (!m) {
+    m = 15
+  } else if (!m.match(/^[1-9]\d*$/)) {
+    m = 15
+  }
+  return new RegExp('^([1-9]\\d{0,' + (m - 1) + '})$')
 }

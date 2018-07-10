@@ -14,7 +14,7 @@
           </el-col>
         </el-row>
       </div>
-      <div class="start-stop-content">
+      <div class="start-stop-content text-center animated" :class="{fadeInLeft: fadeIn}">
         {{msg}}
       </div>
     </div>
@@ -27,7 +27,8 @@ export default {
     return {
       dockerList: [],
       name: '',
-      msg: ''
+      msg: '',
+      fadeIn: false
     }
   },
   computed: {
@@ -66,10 +67,19 @@ export default {
       return uri;
     },
     start() {
-      this.msg = '启动命令：';
+      this.msg = '请登录节点服务器，执行docker命令。';
+      this.fadeIn = true;
+      this.timeout()
     },
     stop() {
-      this.msg = '停止命令：';
+      this.msg = '请登录节点服务器，执行docker命令。';
+      this.fadeIn = true;
+      this.timeout()
+    },
+    timeout() {
+      setTimeout(() => {
+        this.fadeIn = false;
+      }, 1000);
     }
     // start() {
     //   let url = this.func('start');
@@ -118,5 +128,7 @@ export default {
   .start-stop-content {
     margin-top: 20px;
     padding: 20px;
+    font-size: 16px;
+    color: #333;
   }
 </style>

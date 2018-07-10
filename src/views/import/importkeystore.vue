@@ -149,6 +149,9 @@ export default {
         this.loading.close()
         if (res.retCode == '1') {
           this.$message.success('导入账户成功')
+          this.$router.push({
+            name: 'Summary'
+          })
         } else if (res.retMsg) {
           this.$message.error(res.retMsg + ',导入失败')
         } else {

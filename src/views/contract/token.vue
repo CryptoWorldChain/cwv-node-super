@@ -36,7 +36,7 @@
           <el-input @input="inputToken" placeholder="请输入token名称，只能包含大写英文字母" v-model="form.token"></el-input>
         </el-form-item>
         <el-form-item prop="total">
-          <el-input placeholder="请输入token总量" v-model="form.total"></el-input>
+          <el-input maxlength="15" placeholder="请输入token总量" v-model="form.total"></el-input>
         </el-form-item>
         <el-form-item prop="pwd">
           <el-input placeholder="请输入密码" type="password" v-model="form.pwd"></el-input>
@@ -51,11 +51,12 @@
 
 <script>
 import { getAddress } from '@/utils/auth';
-import { numReg } from '@/utils/validate';
+import { intReg } from '@/utils/validate';
 export default {
   data () {
-    var reg = numReg('15','0');
+    var reg = intReg('15');
     var tokenValidator = function (rules,value,c) {
+      value = value.trim();
       if (!value) {
         c('请输入token名称');
       } else if (value.match(/^CW/)) {
@@ -68,16 +69,19 @@ export default {
         c();
       }
     }
+    let that = this;
     var totalValidator = function (rules,value,c) {
+      value = value.split(',').join('');
       if (value == 0) {
         c('请输入大于0的数字');
       }
       if (!reg.test(value)) {
-        c('请输入正整数，且值不应该大于1000亿');
+        c('请正确输入正整数');
       }else {
-        if (value > 1e11) {
-          c('总量不应超过1000亿');
+        if (value > 1e12) {
+          c('您输入的数值过大');
         }
+        that.form.total = that.accounting.formatNumber(value);
         c();
       }
     }
@@ -104,7 +108,7 @@ export default {
           {validator: tokenValidator, trigger: 'blur'}
         ],
         total: [
-          {validator: totalValidator, trigger: 'blur'}
+          {validator: totalValidator, trigger: 'change'}
         ],
         pwd: [
           { validator: pwdValidator, trigger: 'blur'}
@@ -168,7 +172,7 @@ export default {
       this.$loading();
       let { token, total, pwd } = this.form;
       token = token.trim();
-      total = total.trim();
+      total = total.trim().split(',').join('');
       pwd = pwd.trim();
       this.$http.post('/node/man/pbctt.do',{
         token,

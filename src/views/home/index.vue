@@ -322,10 +322,10 @@ export default {
         this.loading = false;
         if (res.retCode == '1' ) {
           // do something
-          this.$router.push({
-            path: '/summary'
-          })
-          this.$message.success('设置成功');
+          // this.$router.push({
+          //   path: '/summary'
+          // })
+          this.$alert('网络设置成功，请登录节点服务器，执行docker命令后再重新登录。','温馨提示');
         }else {
           if (res.retMsg) {
             this.$message.error('设置失败,'+res.retMsg );

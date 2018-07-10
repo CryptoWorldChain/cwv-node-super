@@ -56,9 +56,9 @@
             </el-col>
           </el-row>
           <div>token: </div>
-          <div v-for="(token) in tokens" :key="token.token">
+          <div v-for="(token) in tokens" :key="token.token" style="border: 1px solid #f1f1f1; padding: 10px;">
             <el-row>
-              <el-col :span="4" :xs="8">{{'name'}}:</el-col>
+              <el-col :span="2" :xs="8">{{'name'}}:</el-col>
               <el-col :span="2" :xs="16">
                 {{token.token}}
               </el-col>
