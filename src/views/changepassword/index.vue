@@ -108,7 +108,7 @@ export default {
       this.$loading();
       let oldpass = this.loginForm.oldpass;
       let newpass = this.loginForm.newpass;
-      this.$http.post('man/pbcpw.do',{old: oldpass, new: newpass}).then((res) => {
+      this.$http.post('/node/man/pbcpw.do',{old: oldpass, new: newpass}).then((res) => {
         this.$loading().close();
         if (res && res.retCode == '1') {
           this.removeCookies();

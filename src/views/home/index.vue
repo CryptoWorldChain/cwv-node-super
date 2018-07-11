@@ -339,7 +339,7 @@ export default {
     },
     initNode() {
       this.$http.post('/node/man/pbgni.do').then((res) => {
-        if (res.serverTime) {
+        if (res.serverTime || res.serverType) {
           this.node = res;
           if (res.address) {
             setAddress(res.address)
@@ -355,7 +355,7 @@ export default {
     },
     initWait() {
       this.$http.post('/node/man/pbgnt.do').then((res) => {
-        if (typeof res.waitBlock !== undefined) {
+        if (typeof res.waitBlock !== 'undefined') {
           this.wait = res;
         }else {
         }
